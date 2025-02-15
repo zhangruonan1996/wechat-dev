@@ -1,14 +1,17 @@
 package com.dengenxi.service.impl;
 
+import cn.hutool.core.util.DesensitizedUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.dengenxi.base.BaseInfoProperties;
 import com.dengenxi.enums.Sex;
 import com.dengenxi.mapper.UserMapper;
 import com.dengenxi.pojo.User;
 import com.dengenxi.service.UserService;
+import com.dengenxi.utils.DesensitizationUtil;
 import com.dengenxi.utils.LocalDateUtils;
 import com.dengenxi.utils.SnowUtils;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +53,7 @@ public class UserServiceImpl extends BaseInfoProperties implements UserService {
      * 创建用户信息，并且返回创建的用户对象
      *
      * @param mobile 手机号码
+     * @param nickname 用户昵称
      * @return 创建的用户对象
      * @author qinhao
      * @email coderqin@foxmail.com
@@ -57,7 +61,7 @@ public class UserServiceImpl extends BaseInfoProperties implements UserService {
      */
     @Override
     @Transactional
-    public User createUser(String mobile) {
+    public User createUser(String mobile, String nickname) {
         User user = new User();
         // 设置id
         user.setId(SnowUtils.getSnowflakeNextIdStr());
@@ -71,7 +75,11 @@ public class UserServiceImpl extends BaseInfoProperties implements UserService {
         // FIXME
         user.setWechatNumImg(USER_DEFAULT_AVATAR);
         // 设置默认昵称
-        user.setNickname("微信用户");
+        if (StringUtils.isBlank(nickname)) {
+            user.setNickname("用户" + DesensitizedUtil.mobilePhone(mobile));
+        } else {
+            user.setNickname(nickname);
+        }
         // 设置默认姓名
         user.setRealName("");
         // 设置性别

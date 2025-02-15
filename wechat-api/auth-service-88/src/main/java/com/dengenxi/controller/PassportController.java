@@ -15,6 +15,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -55,7 +56,7 @@ public class PassportController extends BaseInfoProperties {
      * @date 2025-02-15 20:14:36
      */
     @PostMapping("/regist")
-    public GraceJSONResult regist(@RequestBody RegistLoginBO registLoginBO, HttpServletRequest request) {
+    public GraceJSONResult regist(@Validated @RequestBody RegistLoginBO registLoginBO, HttpServletRequest request) {
         User user = passportService.regist(registLoginBO, request);
         return GraceJSONResult.ok(user);
     }

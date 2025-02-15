@@ -70,6 +70,7 @@ public class PassportServiceImpl extends BaseInfoProperties implements PassportS
     public User regist(RegistLoginBO registLoginBO, HttpServletRequest request) {
         String mobile = registLoginBO.getMobile();
         String smsCode = registLoginBO.getSmsCode();
+        String nickname = registLoginBO.getNickname();
 
         // 1. 从redis中获得验证码进行校验判断是否匹配
         String redisCode = redis.get(MOBILE_SMSCODE + ":" + mobile);
@@ -81,7 +82,7 @@ public class PassportServiceImpl extends BaseInfoProperties implements PassportS
         User dbUser = userService.queryByMobile(mobile);
         // 2.1 如果查询数据库中用户为空,则表示以用户没有注册过,则需要进行用户信息数据的入库
         if (dbUser == null) {
-            dbUser = userService.createUser(mobile);
+            dbUser = userService.createUser(mobile, nickname);
         } else {
             GraceException.display(ResponseStatusEnum.USER_ALREADY_EXIST_ERROR);
         }
