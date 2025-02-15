@@ -27,4 +27,38 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.3</version>
+        <relativePath/>
+    </parent>
+
+    <!--
+        使用DependencyManagement的目的是为了保证当前父工程干净
+        父工程只会负责对依赖（坐标）的管理，以及依赖的版本管理，不会引入额外的jar依赖
+        如此一来，父工程的职责就很单一，也符合面向对象的理念，是一种父子依赖的继承关系
+        依赖的导入只有在各自的二级或者三级（子工程）中才会导入
+     -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- 引入微服务 SpringCloud 依赖 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>2023.0.5</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>2023.0.3.2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 </project>
