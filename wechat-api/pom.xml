@@ -17,4 +17,12 @@
         <module>file-service-55</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.dengenxi</groupId>
+            <artifactId>wechat-pojo</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 </project>
