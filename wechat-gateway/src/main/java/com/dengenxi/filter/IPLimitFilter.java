@@ -55,9 +55,9 @@ public class IPLimitFilter extends BaseInfoProperties implements GlobalFilter, O
         //     return renderErrorMsg(exchange, ResponseStatusEnum.SYSTEM_ERROR_BLACK_IP);
         // }
 
-        log.info("CONTINUE_COUNTS:{}", CONTINUE_COUNTS);
-        log.info("TIME_INTERVAL:{}", TIME_INTERVAL);
-        log.info("LIMIT_TIMES:{}", LIMIT_TIMES);
+        // log.info("CONTINUE_COUNTS:{}", CONTINUE_COUNTS);
+        // log.info("TIME_INTERVAL:{}", TIME_INTERVAL);
+        // log.info("LIMIT_TIMES:{}", LIMIT_TIMES);
 
         return doLimit(exchange, chain);
 

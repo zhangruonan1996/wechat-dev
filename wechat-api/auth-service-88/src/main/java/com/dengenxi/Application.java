@@ -3,6 +3,7 @@ package com.dengenxi;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * @author qinhao
@@ -11,6 +12,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  */
 @SpringBootApplication
 @EnableDiscoveryClient  // 开启服务的注册和发现功能
+@EnableAsync
 public class Application {
 
     public static void main(String[] args) {
