@@ -6,6 +6,8 @@ import com.dengenxi.grace.result.ResponseStatusEnum;
 import com.dengenxi.utils.IPUtil;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -29,6 +31,7 @@ import java.nio.charset.StandardCharsets;
  */
 @Component
 @Slf4j
+@RefreshScope
 public class IPLimitFilter extends BaseInfoProperties implements GlobalFilter, Ordered {
 
     /**
@@ -38,9 +41,12 @@ public class IPLimitFilter extends BaseInfoProperties implements GlobalFilter, O
      * 等待30秒静默后，才能够继续恢复访问
      */
 
-    private static final Integer CONTINUE_COUNTS = 3;
-    private static final Integer TIME_INTERVAL = 20;
-    private static final Integer LIMIT_TIMES = 30;
+    @Value("${blackIP.CONTINUE_COUNTS}")
+    private Integer CONTINUE_COUNTS;
+    @Value("${blackIP.TIME_INTERVAL}")
+    private Integer TIME_INTERVAL;
+    @Value("${blackIP.LIMIT_TIMES}")
+    private Integer LIMIT_TIMES;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -48,6 +54,10 @@ public class IPLimitFilter extends BaseInfoProperties implements GlobalFilter, O
         //     // 终止请求，返回错误信息
         //     return renderErrorMsg(exchange, ResponseStatusEnum.SYSTEM_ERROR_BLACK_IP);
         // }
+
+        log.info("CONTINUE_COUNTS:{}", CONTINUE_COUNTS);
+        log.info("TIME_INTERVAL:{}", TIME_INTERVAL);
+        log.info("LIMIT_TIMES:{}", LIMIT_TIMES);
 
         return doLimit(exchange, chain);
 

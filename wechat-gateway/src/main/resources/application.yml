@@ -9,8 +9,12 @@ spring:
   profiles:
     active: dev # dev-开发环境；prod-生产环境；test-测试环境
 
-
 # 日志级别
 logging:
   level:
     root: info
+
+#blackIP:
+#  CONTINUE_COUNTS: 5  # IP连续请求的次数
+#  TIME_INTERVAL: 15   # IP判断的时间间隔，单位：秒
+#  LIMIT_TIMES: 25     # 黑名单IP限制的时间，单位：秒
