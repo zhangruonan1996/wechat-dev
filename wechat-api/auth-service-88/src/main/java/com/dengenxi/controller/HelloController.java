@@ -1,7 +1,8 @@
 package com.dengenxi.controller;
 
-import com.dengenxi.SmsTask;
+import com.dengenxi.tasks.SmsTask;
 import com.dengenxi.utils.MyInfo;
+import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,11 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class HelloController {
 
-    private final SmsTask smsTask;
-
-    public HelloController(SmsTask smsTask) {
-        this.smsTask = smsTask;
-    }
+    @Resource
+    private SmsTask smsTask;
 
     @GetMapping("/hello")
     public Object hello() {

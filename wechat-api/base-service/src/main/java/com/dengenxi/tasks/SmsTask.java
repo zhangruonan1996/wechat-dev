@@ -1,4 +1,4 @@
-package com.dengenxi;
+package com.dengenxi.tasks;
 
 import com.dengenxi.utils.SMSUtils;
 import jakarta.annotation.Resource;
