@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2025-02-15 11:30:11
  */
 @RestController
-@RequestMapping("/test")
+@RequestMapping("/file")
 public class HelloController {
 
     @GetMapping("/hello")
