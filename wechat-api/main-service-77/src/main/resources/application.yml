@@ -1,5 +1,4 @@
 server:
-  port: 20077
   tomcat:
     uri-encoding: UTF-8
     max-swallow-size: -1 # 不限制请求体大小
@@ -7,12 +6,8 @@ server:
 spring:
   application:
     name: main-service
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
-        username: nacos
-        password: nacos
+  profiles:
+    active: dev
 
 # 日志级别
 logging:

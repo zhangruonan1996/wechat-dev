@@ -1,5 +1,4 @@
 server:
-  port: 20088
   tomcat:
     uri-encoding: UTF-8
     max-swallow-size: -1 # 不限制请求体大小
@@ -7,12 +6,9 @@ server:
 spring:
   application:
     name: auth-service
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
-        username: nacos
-        password: nacos
+  profiles:
+    active: dev # dev-开发环境；prod-生产环境；test-测试环境
+
 
 # 日志级别
 logging:
