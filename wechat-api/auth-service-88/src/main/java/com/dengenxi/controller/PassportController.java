@@ -2,22 +2,18 @@ package com.dengenxi.controller;
 
 import com.dengenxi.base.BaseInfoProperties;
 import com.dengenxi.bo.RegistLoginBO;
-import com.dengenxi.exceptions.GraceException;
 import com.dengenxi.grace.result.GraceJSONResult;
-import com.dengenxi.grace.result.ResponseStatusEnum;
 import com.dengenxi.pojo.User;
 import com.dengenxi.service.PassportService;
-import com.dengenxi.service.UserService;
-import com.dengenxi.tasks.SmsTask;
-import com.dengenxi.utils.IPUtil;
-import com.dengenxi.utils.MyInfo;
+import com.dengenxi.vo.UserVO;
 import jakarta.annotation.Resource;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author qinhao
@@ -60,8 +56,8 @@ public class PassportController extends BaseInfoProperties {
      */
     @PostMapping("/regist")
     public GraceJSONResult regist(@Validated @RequestBody RegistLoginBO registLoginBO, HttpServletRequest request) {
-        User user = passportService.regist(registLoginBO, request);
-        return GraceJSONResult.ok(user);
+        UserVO userVO = passportService.regist(registLoginBO, request);
+        return GraceJSONResult.ok(userVO);
     }
 
     /**
@@ -76,8 +72,8 @@ public class PassportController extends BaseInfoProperties {
      */
     @PostMapping("/login")
     public GraceJSONResult login(@Validated @RequestBody RegistLoginBO registLoginBO, HttpServletRequest request) {
-        User user = passportService.login(registLoginBO, request);
-        return GraceJSONResult.ok(user);
+        UserVO userVO = passportService.login(registLoginBO, request);
+        return GraceJSONResult.ok(userVO);
     }
 
 }

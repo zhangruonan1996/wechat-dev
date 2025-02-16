@@ -1,7 +1,7 @@
 package com.dengenxi.service;
 
 import com.dengenxi.bo.RegistLoginBO;
-import com.dengenxi.pojo.User;
+import com.dengenxi.vo.UserVO;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -31,7 +31,7 @@ public interface PassportService {
      * @email coderqin@foxmail.com
      * @date 2025-02-15 21:05:41
      */
-    User regist(RegistLoginBO registLoginBO, HttpServletRequest request);
+    UserVO regist(RegistLoginBO registLoginBO, HttpServletRequest request);
 
     /**
      * 登录
@@ -42,6 +42,6 @@ public interface PassportService {
      * @email coderqin@foxmail.com
      * @date 2025-02-16 18:34:53
      */
-    User login(RegistLoginBO registLoginBO, HttpServletRequest request);
+    UserVO login(RegistLoginBO registLoginBO, HttpServletRequest request);
 
 }

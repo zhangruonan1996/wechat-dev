@@ -10,10 +10,14 @@ import com.dengenxi.service.UserService;
 import com.dengenxi.tasks.SmsTask;
 import com.dengenxi.utils.IPUtil;
 import com.dengenxi.utils.MyInfo;
+import com.dengenxi.vo.UserVO;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 /**
  * @author qinhao
@@ -66,7 +70,7 @@ public class PassportServiceImpl extends BaseInfoProperties implements PassportS
      * @date 2025-02-15 21:09:05
      */
     @Override
-    public User regist(RegistLoginBO registLoginBO, HttpServletRequest request) {
+    public UserVO regist(RegistLoginBO registLoginBO, HttpServletRequest request) {
         String mobile = registLoginBO.getMobile();
         String smsCode = registLoginBO.getSmsCode();
         String nickname = registLoginBO.getNickname();
@@ -87,8 +91,17 @@ public class PassportServiceImpl extends BaseInfoProperties implements PassportS
         }
         // 3. 用户注册成功后,删除redis中的短信验证码使其失效
         redis.del(MOBILE_SMSCODE + ":" + mobile);
+
+        // 设置用户分布式回话，保存用户的token令牌，存储到redis
+        String uToken = TOKEN_USER_PREFIX + SYMBOL_DOT + UUID.randomUUID();
+        redis.set(REDIS_USER_TOKEN + ":" + dbUser.getId(), uToken);
+
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(dbUser, userVO);
+        userVO.setUserToken(uToken);
+
         // 4. 返回用户数据给前端
-        return dbUser;
+        return userVO;
     }
 
     /**
@@ -101,7 +114,7 @@ public class PassportServiceImpl extends BaseInfoProperties implements PassportS
      * @date 2025-02-16 18:35:05
      */
     @Override
-    public User login(RegistLoginBO registLoginBO, HttpServletRequest request) {
+    public UserVO login(RegistLoginBO registLoginBO, HttpServletRequest request) {
         String mobile = registLoginBO.getMobile();
         String code = registLoginBO.getSmsCode();
 
@@ -121,6 +134,14 @@ public class PassportServiceImpl extends BaseInfoProperties implements PassportS
         // 用户登录成功后，立即作废当前验证码
         redis.del(MOBILE_SMSCODE + ":" + mobile);
 
-        return user;
+        // 设置用户分布式回话，保存用户的token令牌，存储到redis
+        String uToken = TOKEN_USER_PREFIX + SYMBOL_DOT + UUID.randomUUID();
+        redis.set(REDIS_USER_TOKEN + ":" + user.getId(), uToken);
+
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user, userVO);
+        userVO.setUserToken(uToken);
+
+        return userVO;
     }
 }
