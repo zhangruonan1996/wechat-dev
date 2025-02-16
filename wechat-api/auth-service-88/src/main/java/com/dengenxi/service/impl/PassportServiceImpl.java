@@ -61,7 +61,7 @@ public class PassportServiceImpl extends BaseInfoProperties implements PassportS
     }
 
     /**
-     *
+     * 注册
      *
      * @param registLoginBO
      * @param request
@@ -143,5 +143,20 @@ public class PassportServiceImpl extends BaseInfoProperties implements PassportS
         userVO.setUserToken(uToken);
 
         return userVO;
+    }
+
+    /**
+     * 退出登录
+     *
+     * @param userId 用户id
+     * @param request 本次请求对象
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-16 19:16:56
+     */
+    @Override
+    public void logout(String userId, HttpServletRequest request) {
+        // 清理用户的分布式会话
+        redis.del(REDIS_USER_TOKEN + ":" + userId);
     }
 }

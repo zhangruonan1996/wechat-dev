@@ -44,4 +44,14 @@ public interface PassportService {
      */
     UserVO login(RegistLoginBO registLoginBO, HttpServletRequest request);
 
+    /**
+     * 退出登录
+     *
+     * @param userId 用户id
+     * @param request 本次请求对象
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-16 19:16:39
+     */
+    void logout(String userId, HttpServletRequest request);
 }

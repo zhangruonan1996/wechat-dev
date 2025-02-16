@@ -10,10 +10,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author qinhao
@@ -74,6 +71,22 @@ public class PassportController extends BaseInfoProperties {
     public GraceJSONResult login(@Validated @RequestBody RegistLoginBO registLoginBO, HttpServletRequest request) {
         UserVO userVO = passportService.login(registLoginBO, request);
         return GraceJSONResult.ok(userVO);
+    }
+
+    /**
+     * 退出登录
+     *
+     * @param userId 用户编号
+     * @param request 本次请求对象
+     * @return 请求结果反馈
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-16 19:15:34
+     */
+    @PostMapping("/logout")
+    public GraceJSONResult logout(@RequestParam String userId, HttpServletRequest request) {
+        passportService.logout(userId, request);
+        return GraceJSONResult.ok();
     }
 
 }
