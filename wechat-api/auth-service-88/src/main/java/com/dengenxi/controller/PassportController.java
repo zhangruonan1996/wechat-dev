@@ -12,6 +12,7 @@ import com.dengenxi.tasks.SmsTask;
 import com.dengenxi.utils.IPUtil;
 import com.dengenxi.utils.MyInfo;
 import jakarta.annotation.Resource;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -48,6 +49,8 @@ public class PassportController extends BaseInfoProperties {
     }
 
     /**
+     * 注册
+     *
      * @param registLoginBO
      * @param request
      * @return
@@ -58,6 +61,22 @@ public class PassportController extends BaseInfoProperties {
     @PostMapping("/regist")
     public GraceJSONResult regist(@Validated @RequestBody RegistLoginBO registLoginBO, HttpServletRequest request) {
         User user = passportService.regist(registLoginBO, request);
+        return GraceJSONResult.ok(user);
+    }
+
+    /**
+     * 登录
+     *
+     * @param registLoginBO
+     * @param request
+     * @return
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-16 18:34:11
+     */
+    @PostMapping("/login")
+    public GraceJSONResult login(@Validated @RequestBody RegistLoginBO registLoginBO, HttpServletRequest request) {
+        User user = passportService.login(registLoginBO, request);
         return GraceJSONResult.ok(user);
     }
 

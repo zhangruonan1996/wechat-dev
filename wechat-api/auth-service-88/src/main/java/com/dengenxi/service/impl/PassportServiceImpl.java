@@ -3,7 +3,6 @@ package com.dengenxi.service.impl;
 import com.dengenxi.base.BaseInfoProperties;
 import com.dengenxi.bo.RegistLoginBO;
 import com.dengenxi.exceptions.GraceException;
-import com.dengenxi.grace.result.GraceJSONResult;
 import com.dengenxi.grace.result.ResponseStatusEnum;
 import com.dengenxi.pojo.User;
 import com.dengenxi.service.PassportService;
@@ -90,5 +89,38 @@ public class PassportServiceImpl extends BaseInfoProperties implements PassportS
         redis.del(MOBILE_SMSCODE + ":" + mobile);
         // 4. 返回用户数据给前端
         return dbUser;
+    }
+
+    /**
+     * 登录
+     *
+     * @param registLoginBO
+     * @param request
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-16 18:35:05
+     */
+    @Override
+    public User login(RegistLoginBO registLoginBO, HttpServletRequest request) {
+        String mobile = registLoginBO.getMobile();
+        String code = registLoginBO.getSmsCode();
+
+        // 从redis中获得验证码进行校验，判断是否匹配
+        String redisCode = redis.get(MOBILE_SMSCODE + ":" + mobile);
+        if (StringUtils.isBlank(redisCode) || !redisCode.equalsIgnoreCase(code)) {
+            GraceException.display(ResponseStatusEnum.SMS_CODE_ERROR);
+        }
+
+        // 查询数据库
+        User user = userService.queryByMobile(mobile);
+        if (user == null) {
+            // 如果用户不存在,返回错误信息
+            GraceException.display(ResponseStatusEnum.USER_NOT_EXIST_ERROR);
+        }
+
+        // 用户登录成功后，立即作废当前验证码
+        redis.del(MOBILE_SMSCODE + ":" + mobile);
+
+        return user;
     }
 }

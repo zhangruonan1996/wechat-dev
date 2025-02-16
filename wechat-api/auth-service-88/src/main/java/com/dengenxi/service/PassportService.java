@@ -23,7 +23,7 @@ public interface PassportService {
     void smsTask(String mobile, HttpServletRequest request) throws Exception;
 
     /**
-     *
+     * 注册
      *
      * @param registLoginBO
      * @param request
@@ -32,5 +32,16 @@ public interface PassportService {
      * @date 2025-02-15 21:05:41
      */
     User regist(RegistLoginBO registLoginBO, HttpServletRequest request);
+
+    /**
+     * 登录
+     *
+     * @param registLoginBO
+     * @param request
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-16 18:34:53
+     */
+    User login(RegistLoginBO registLoginBO, HttpServletRequest request);
 
 }
