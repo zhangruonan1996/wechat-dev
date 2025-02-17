@@ -41,11 +41,22 @@ public class UserServiceImpl extends BaseInfoProperties implements UserService {
     @Override
     @Transactional
     public UserVO modifyUserInfo(ModifyUserBO userBO) {
+
+        String wechatNum = userBO.getWechatNum();
+
         User pendingUser = new User();
 
         String userId = userBO.getUserId();
+
         if (StringUtils.isBlank(userId)) {
             GraceException.display(ResponseStatusEnum.USER_INFO_UPDATED_ERROR);
+        }
+
+        if (StringUtils.isNotBlank(wechatNum)) {
+            String isExist = redis.get(REDIS_USER_ALREADY_UPDATE_WECHAT_NUM + ":" + userId);
+            if (StringUtils.isNotBlank(isExist)) {
+                GraceException.display(ResponseStatusEnum.WECHAT_NUM_ALREADY_MODIFIED_ERROR);
+            }
         }
 
         BeanUtils.copyProperties(userBO, pendingUser);
@@ -54,7 +65,14 @@ public class UserServiceImpl extends BaseInfoProperties implements UserService {
 
         userMapper.updateById(pendingUser);
 
-        return getUserInfo(userBO.getUserId(), true);
+        // 如果用户修改微信号，则只能修改一次
+        if (StringUtils.isNotBlank(wechatNum)) {
+            redis.setByDays(REDIS_USER_ALREADY_UPDATE_WECHAT_NUM + ":" + userId, userId, 365);
+        }
+
+        UserVO userVO = getUserInfo(userBO.getUserId(), true);
+
+        return userVO;
 
     }
 
