@@ -45,6 +45,18 @@ public interface PassportService {
     UserVO login(RegistLoginBO registLoginBO, HttpServletRequest request);
 
     /**
+     * 一键注册登录接口，可以同时提供给用户做登录和注册使用调用
+     *
+     * @param registLoginBO
+     * @param request
+     * @return
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-17 20:35:52
+     */
+    UserVO registOrLogin(RegistLoginBO registLoginBO, HttpServletRequest request);
+
+    /**
      * 退出登录
      *
      * @param userId 用户id

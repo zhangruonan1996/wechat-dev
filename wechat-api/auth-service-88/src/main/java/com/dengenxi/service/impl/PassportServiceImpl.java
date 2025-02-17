@@ -146,6 +146,50 @@ public class PassportServiceImpl extends BaseInfoProperties implements PassportS
     }
 
     /**
+     * 一键注册登录接口，可以同时提供给用户做登录和注册使用调用
+     *
+     * @param registLoginBO
+     * @param request
+     * @return
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-17 20:36:27
+     */
+    @Override
+    public UserVO registOrLogin(RegistLoginBO registLoginBO, HttpServletRequest request) {
+        String mobile = registLoginBO.getMobile();
+        String code = registLoginBO.getSmsCode();
+        String nickname = registLoginBO.getNickname();
+
+        // 从redis中获取验证码进行校验
+        String redisCode = redis.get(MOBILE_SMSCODE + ":" + mobile);
+        if (StringUtils.isBlank(redisCode) || !redisCode.equalsIgnoreCase(code)) {
+            GraceException.display(ResponseStatusEnum.SMS_CODE_ERROR);
+        }
+
+        // 根据手机号查询数据库是否存在用户
+        User user = userService.queryByMobile(mobile);
+        if (user == null) {
+            // 如果数据库没有该用户，则表示该用户未注册，需要进行用户注册
+            user = userService.createUser(mobile, nickname);
+        }
+
+        // 作废redis验证码
+        redis.del(MOBILE_SMSCODE + ":" + mobile);
+
+        // 设置用户分布式会话，保存用户的token令牌，存储到redis
+        String uToken = TOKEN_USER_PREFIX + SYMBOL_DOT + UUID.randomUUID();
+        redis.set(REDIS_USER_TOKEN + ":" + user.getId(), uToken);
+
+        // 返回用户数据给前端
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user, userVO);
+        userVO.setUserToken(uToken);
+
+        return userVO;
+    }
+
+    /**
      * 退出登录
      *
      * @param userId 用户id
