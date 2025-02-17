@@ -3,11 +3,9 @@ package com.dengenxi.controller;
 import com.dengenxi.bo.ModifyUserBO;
 import com.dengenxi.grace.result.GraceJSONResult;
 import com.dengenxi.service.UserService;
+import com.dengenxi.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 用户相关接口
@@ -34,8 +32,22 @@ public class UserController {
      */
     @PostMapping("/modify")
     public GraceJSONResult modify(@RequestBody ModifyUserBO modifyUserBO) {
-        userService.modifyUserInfo(modifyUserBO);
-        return GraceJSONResult.ok();
+        UserVO userVO = userService.modifyUserInfo(modifyUserBO);
+        return GraceJSONResult.ok(userVO);
+    }
+
+    /**
+     * 根据用户id查询用户数据
+     *
+     * @param userId 用户id
+     * @return 用户数据
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-17 18:59:22
+     */
+    @PostMapping("/get")
+    public GraceJSONResult get(@RequestParam("userId") String userId) {
+        return GraceJSONResult.ok(userService.getUserInfo(userId, false));
     }
 
 }
