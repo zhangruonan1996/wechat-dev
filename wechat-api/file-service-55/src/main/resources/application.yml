@@ -10,7 +10,8 @@ spring:
     active: dev
   servlet:
     multipart:
-      max-file-size: 20MB
+      max-file-size: 8MB
+      max-request-size: 8MB
 
 # 日志级别
 logging:

@@ -28,7 +28,7 @@ public class GraceExceptionHandler {
     @ResponseBody
     public GraceJSONResult returnMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
         e.printStackTrace();
-        return GraceJSONResult.exception(ResponseStatusEnum.FILE_MAX_SIZE_500KB_ERROR);
+        return GraceJSONResult.exception(ResponseStatusEnum.FILE_MAX_SIZE_8MB_ERROR);
     }
 
     @ExceptionHandler(MyCustomException.class)
