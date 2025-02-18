@@ -52,6 +52,15 @@ public class SecurityTokenFilter extends BaseInfoProperties implements GlobalFil
             }
         }
 
+        // 排除静态资源服务static
+        String fileStart = excludeUrlPathProperties.getFileStart();
+        if (StringUtils.isNotBlank(fileStart)) {
+            boolean matchFileStart = antPathMatcher.matchStart(fileStart, url);
+            if (matchFileStart) {
+                return chain.filter(exchange);
+            }
+        }
+
         // 请求被拦截，需要校验
         log.info("当前请求的路径：【{}】被拦截", url);
 
