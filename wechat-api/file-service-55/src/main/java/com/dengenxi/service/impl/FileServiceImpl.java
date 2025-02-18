@@ -1,7 +1,14 @@
 package com.dengenxi.service.impl;
 
+import com.dengenxi.exceptions.GraceException;
+import com.dengenxi.grace.result.ResponseStatusEnum;
 import com.dengenxi.service.FileService;
+import com.dengenxi.utils.MinioConfig;
+import com.dengenxi.utils.MinioUtils;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +23,9 @@ import java.io.IOException;
 @Service
 public class FileServiceImpl implements FileService {
 
+    @Resource
+    private MinioConfig minioConfig;
+
     /**
      * 上传头像
      *
@@ -27,7 +37,7 @@ public class FileServiceImpl implements FileService {
      * @date 2025-02-18 20:00:52
      */
     @Override
-    public void uploadFace(MultipartFile file, String userId, HttpServletRequest request) throws IOException {
+    public void uploadFace1(MultipartFile file, String userId, HttpServletRequest request) throws IOException {
         // 获取文件原始名称
         String filename = file.getOriginalFilename();
         // 获取文件后缀名
@@ -46,5 +56,35 @@ public class FileServiceImpl implements FileService {
         }
         // 将文件写入磁盘
         file.transferTo(newFile);
+    }
+
+    /**
+     * 上传头像
+     *
+     * @param file 头像文件
+     * @param userId 用户id
+     * @param request 本次请求对象
+     * @return 头像地址
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-18 22:27:41
+     */
+    @Override
+    public String uploadFace(MultipartFile file, String userId, HttpServletRequest request) throws Exception {
+        if (StringUtils.isBlank(userId)) {
+            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+        // 获取文件原始名称
+        String filename = file.getOriginalFilename();
+        if (StringUtils.isBlank(filename)) {
+            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        filename = "face" + "/" + userId + "/" + filename;
+        MinioUtils.putObject(minioConfig.getBucketName(), filename, file.getInputStream());
+
+        String faceUrl = minioConfig.getFileHost() + "/" + minioConfig.getBucketName() + "/" + filename;
+
+        return faceUrl;
     }
 }

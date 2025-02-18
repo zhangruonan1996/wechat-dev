@@ -25,9 +25,9 @@ public class FileController {
     private FileService fileService;
 
     @PostMapping("/uploadFace")
-    public GraceJSONResult uploadFace(@RequestParam("file") MultipartFile file, String userId, HttpServletRequest request) throws IOException {
-        fileService.uploadFace(file, userId, request);
-        return GraceJSONResult.ok();
+    public GraceJSONResult uploadFace(@RequestParam("file") MultipartFile file, String userId, HttpServletRequest request) throws Exception {
+        String faceUrl = fileService.uploadFace(file, userId, request);
+        return GraceJSONResult.ok(faceUrl);
     }
 
 }

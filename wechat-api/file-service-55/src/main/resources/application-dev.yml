@@ -8,3 +8,10 @@ spring:
         server-addr: 127.0.0.1:8848
         # username: nacos
         # password: nacos
+
+minio:
+  endpoint: http://127.0.0.1:9000 # Minio服务地址
+  fileHost: http://127.0.0.1:9000 # 文件地址host
+  bucketName: wechat
+  accessKey: minio
+  secretKey: 12345678

@@ -100,6 +100,20 @@
                 <version>5.8.23</version>
             </dependency>
 
+            <!-- minio相关依赖 -->
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>8.5.17</version>
+            </dependency>
+
+            <!-- okhttp -->
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>4.12.0</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
