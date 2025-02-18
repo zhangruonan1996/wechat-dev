@@ -8,6 +8,9 @@ spring:
     name: file-service
   profiles:
     active: dev
+  servlet:
+    multipart:
+      max-file-size: 20MB
 
 # 日志级别
 logging:
