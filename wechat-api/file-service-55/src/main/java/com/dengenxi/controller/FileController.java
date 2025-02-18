@@ -2,6 +2,7 @@ package com.dengenxi.controller;
 
 import com.dengenxi.grace.result.GraceJSONResult;
 import com.dengenxi.service.FileService;
+import com.dengenxi.vo.UserVO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,8 +27,8 @@ public class FileController {
 
     @PostMapping("/uploadFace")
     public GraceJSONResult uploadFace(@RequestParam("file") MultipartFile file, String userId, HttpServletRequest request) throws Exception {
-        String faceUrl = fileService.uploadFace(file, userId, request);
-        return GraceJSONResult.ok(faceUrl);
+        UserVO userVO = fileService.uploadFace(file, userId, request);
+        return GraceJSONResult.ok(userVO);
     }
 
 }

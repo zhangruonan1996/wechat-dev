@@ -114,4 +114,29 @@ public class UserServiceImpl extends BaseInfoProperties implements UserService {
 
         return userVO;
     }
+
+    /**
+     * 更新用户头像
+     *
+     * @param userId 用户id
+     * @param face 用户头像
+     * @return 更新后的用户信息
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 00:01:56
+     */
+    @Override
+    public UserVO updateFace(String userId, String face) {
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(face)) {
+            GraceException.display(ResponseStatusEnum.USER_UPDATE_ERROR);
+        }
+        ModifyUserBO modifyUserBO = new ModifyUserBO();
+        modifyUserBO.setUserId(userId);
+        modifyUserBO.setFace(face);
+        // 更新用户信息
+        this.modifyUserInfo(modifyUserBO);
+        // 返回最新用户信息
+        UserVO userVO = getUserInfo(userId, true);
+        return userVO;
+    }
 }

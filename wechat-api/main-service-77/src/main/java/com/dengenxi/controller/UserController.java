@@ -50,4 +50,20 @@ public class UserController {
         return GraceJSONResult.ok(userService.getUserInfo(userId, false));
     }
 
+    /**
+     * 更新用户头像
+     *
+     * @param userId 用户id
+     * @param face 用户头像
+     * @return 更新结果反馈
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 00:01:04
+     */
+    @PostMapping("/updateFace")
+    public GraceJSONResult updateFace(@RequestParam("userId") String userId, @RequestParam("face") String face) {
+        UserVO userVO = userService.updateFace(userId, face);
+        return GraceJSONResult.ok(userVO);
+    }
+
 }

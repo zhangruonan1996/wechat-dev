@@ -1,10 +1,14 @@
 package com.dengenxi.service.impl;
 
 import com.dengenxi.exceptions.GraceException;
+import com.dengenxi.feign.UserInfoMicroServiceFeign;
+import com.dengenxi.grace.result.GraceJSONResult;
 import com.dengenxi.grace.result.ResponseStatusEnum;
 import com.dengenxi.service.FileService;
+import com.dengenxi.utils.JsonUtils;
 import com.dengenxi.utils.MinioConfig;
 import com.dengenxi.utils.MinioUtils;
+import com.dengenxi.vo.UserVO;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +29,9 @@ public class FileServiceImpl implements FileService {
 
     @Resource
     private MinioConfig minioConfig;
+
+    @Resource
+    private UserInfoMicroServiceFeign userInfoMicroServiceFeign;
 
     /**
      * 上传头像
@@ -70,7 +77,7 @@ public class FileServiceImpl implements FileService {
      * @date 2025-02-18 22:27:41
      */
     @Override
-    public String uploadFace(MultipartFile file, String userId, HttpServletRequest request) throws Exception {
+    public UserVO uploadFace(MultipartFile file, String userId, HttpServletRequest request) throws Exception {
         if (StringUtils.isBlank(userId)) {
             GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
         }
@@ -85,6 +92,13 @@ public class FileServiceImpl implements FileService {
 
         String faceUrl = minioConfig.getFileHost() + "/" + minioConfig.getBucketName() + "/" + filename;
 
-        return faceUrl;
+        // 微服务远程调用更新用户头像到数据库
+        GraceJSONResult graceJSONResult = userInfoMicroServiceFeign.updateFace(userId, faceUrl);
+        Object data = graceJSONResult.getData();
+
+        String json = JsonUtils.objectToJson(data);
+        UserVO userVO = JsonUtils.jsonToPojo(json, UserVO.class);
+
+        return userVO;
     }
 }

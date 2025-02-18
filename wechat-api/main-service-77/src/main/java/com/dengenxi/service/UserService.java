@@ -44,4 +44,15 @@ public interface UserService {
      */
     UserVO getUserInfo(String userId, Boolean needToken);
 
+    /**
+     * 更新用户头像
+     *
+     * @param userId 用户id
+     * @param face 用户头像
+     * @return 更新后的用户信息
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 00:01:29
+     */
+    UserVO updateFace(String userId, String face);
 }

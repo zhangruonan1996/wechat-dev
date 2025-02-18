@@ -1,5 +1,6 @@
 package com.dengenxi.service;
 
+import com.dengenxi.vo.UserVO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,5 +35,5 @@ public interface FileService {
      * @email coderqin@foxmail.com
      * @date 2025-02-18 22:27:22
      */
-    String uploadFace(MultipartFile file, String userId, HttpServletRequest request) throws Exception;
+    UserVO uploadFace(MultipartFile file, String userId, HttpServletRequest request) throws Exception;
 }
