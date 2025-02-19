@@ -4,19 +4,17 @@ import cn.hutool.core.util.DesensitizedUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.dengenxi.base.BaseInfoProperties;
 import com.dengenxi.enums.Sex;
+import com.dengenxi.feign.FileMicroServiceFeign;
 import com.dengenxi.mapper.UserMapper;
 import com.dengenxi.pojo.User;
 import com.dengenxi.service.UserService;
-import com.dengenxi.utils.DesensitizationUtil;
 import com.dengenxi.utils.LocalDateUtils;
 import com.dengenxi.utils.SnowUtils;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -32,6 +30,9 @@ public class UserServiceImpl extends BaseInfoProperties implements UserService {
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private FileMicroServiceFeign fileMicroServiceFeign;
 
     /**
      * 根据手机号查询用户数据
@@ -72,8 +73,9 @@ public class UserServiceImpl extends BaseInfoProperties implements UserService {
         String[] uuidStr = uuid.split("-");
         String wechatNum = "wx" + uuidStr[0] + uuidStr[1];
         user.setWechatNum(wechatNum);
-        // FIXME
-        user.setWechatNumImg(USER_DEFAULT_AVATAR);
+        // 设置微信二维码
+        String wechatNumUrl = getQrCodeUrl(wechatNum, TEMP_STRING);
+        user.setWechatNumImg(wechatNumUrl);
         // 设置默认昵称
         if (StringUtils.isBlank(nickname)) {
             user.setNickname("用户" + DesensitizedUtil.mobilePhone(mobile));
@@ -107,6 +109,24 @@ public class UserServiceImpl extends BaseInfoProperties implements UserService {
         // 插入到数据库
         userMapper.insert(user);
         return user;
+    }
+
+    /**
+     * 获取用户微信二维码
+     *
+     * @param wechatNum 微信号
+     * @param userId 用户id
+     * @return 用户微信二维码
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 19:36:02
+     */
+    private String getQrCodeUrl(String wechatNum, String userId) {
+        try {
+            return fileMicroServiceFeign.generatorQrCode(wechatNum, userId);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

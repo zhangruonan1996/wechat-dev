@@ -36,4 +36,15 @@ public interface FileService {
      * @date 2025-02-18 22:27:22
      */
     UserVO uploadFace(MultipartFile file, String userId, HttpServletRequest request) throws Exception;
+
+    /**
+     * 生成二维码
+     *
+     * @param wechatNum 微信号
+     * @param userId 用户id
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 19:00:17
+     */
+    String generatorQrCode(String wechatNum, String userId) throws Exception;
 }

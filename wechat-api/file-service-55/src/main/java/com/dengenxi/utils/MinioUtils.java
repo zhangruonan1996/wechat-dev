@@ -308,6 +308,33 @@ public class MinioUtils {
     }
 
     /**
+     * 上传本地文件
+     *
+     * @param bucketName 存储桶名称
+     * @param objectName 对象名称
+     * @param fileName 本地文件路径
+     * @param needUrl 是否需要文件url
+     * @return 文件url
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 19:07:12
+     */
+    public static String uploadFile(String bucketName, String objectName, String fileName, Boolean needUrl)
+            throws Exception {
+        minioClient.uploadObject(
+                UploadObjectArgs.builder()
+                        .bucket(bucketName)
+                        .object(objectName)
+                        .filename(fileName)
+                        .build());
+        if (needUrl) {
+            String imageUrl = fileHost + "/" + bucketName + "/" + objectName;
+            return imageUrl;
+        }
+        return "";
+    }
+
+    /**
      * 连接参数
      *
      * @param bucketName 存储桶

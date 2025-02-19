@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.dengenxi.base.BaseInfoProperties;
 import com.dengenxi.bo.ModifyUserBO;
 import com.dengenxi.exceptions.GraceException;
+import com.dengenxi.feign.FileMicroServiceFeign;
 import com.dengenxi.grace.result.ResponseStatusEnum;
 import com.dengenxi.mapper.UserMapper;
 import com.dengenxi.pojo.User;
 import com.dengenxi.service.UserService;
 import com.dengenxi.vo.UserVO;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class UserServiceImpl extends BaseInfoProperties implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Resource
+    private FileMicroServiceFeign fileMicroServiceFeign;
 
     /**
      * 修改用户信息
@@ -56,6 +61,10 @@ public class UserServiceImpl extends BaseInfoProperties implements UserService {
             String isExist = redis.get(REDIS_USER_ALREADY_UPDATE_WECHAT_NUM + ":" + userId);
             if (StringUtils.isNotBlank(isExist)) {
                 GraceException.display(ResponseStatusEnum.WECHAT_NUM_ALREADY_MODIFIED_ERROR);
+            } else {
+                // 修改微信二维码
+                String wechatNumUrl = getQrCodeUrl(wechatNum, userId);
+                pendingUser.setWechatNumImg(wechatNumUrl);
             }
         }
 
@@ -138,5 +147,23 @@ public class UserServiceImpl extends BaseInfoProperties implements UserService {
         // 返回最新用户信息
         UserVO userVO = getUserInfo(userId, true);
         return userVO;
+    }
+
+    /**
+     * 获取用户二维码
+     *
+     * @param wechatNum 微信号
+     * @param userId 用户id
+     * @return 用户二维码
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 19:27:01
+     */
+    private String getQrCodeUrl(String wechatNum, String userId) {
+        try {
+            return fileMicroServiceFeign.generatorQrCode(wechatNum, userId);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

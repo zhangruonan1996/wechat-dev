@@ -8,6 +8,7 @@ import com.dengenxi.service.FileService;
 import com.dengenxi.utils.JsonUtils;
 import com.dengenxi.utils.MinioConfig;
 import com.dengenxi.utils.MinioUtils;
+import com.dengenxi.utils.QrCodeUtils;
 import com.dengenxi.vo.UserVO;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author qinhao
@@ -68,8 +72,8 @@ public class FileServiceImpl implements FileService {
     /**
      * 上传头像
      *
-     * @param file 头像文件
-     * @param userId 用户id
+     * @param file    头像文件
+     * @param userId  用户id
      * @param request 本次请求对象
      * @return 头像地址
      * @author qinhao
@@ -100,5 +104,36 @@ public class FileServiceImpl implements FileService {
         UserVO userVO = JsonUtils.jsonToPojo(json, UserVO.class);
 
         return userVO;
+    }
+
+    /**
+     * 生成二维码
+     *
+     * @param wechatNum 微信号
+     * @param userId    用户id
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 19:00:40
+     */
+    @Override
+    public String generatorQrCode(String wechatNum, String userId) throws Exception {
+        // 构建map对象
+        Map<String, String> map = new HashMap<>();
+        map.put("wechatNumber", wechatNum);
+        map.put("userId", userId);
+
+        // 将对象转换为json字符串，用于存储到二维码中
+        String data = JsonUtils.objectToJson(map);
+
+        // 生成二维码
+        String qrCodePath = QrCodeUtils.generateQRCode(data);
+
+        if (StringUtils.isNotBlank(qrCodePath)) {
+            String uuid = UUID.randomUUID().toString();
+            String fileName = "wechatNumber/" + userId + "/" + uuid + ".png";
+            String imageQrCodeUrl = MinioUtils.uploadFile(minioConfig.getBucketName(), fileName, qrCodePath, true);
+            return imageQrCodeUrl;
+        }
+        return null;
     }
 }
