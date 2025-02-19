@@ -67,4 +67,16 @@ public interface UserService {
      * @date 2025-02-19 20:03:21
      */
     UserVO updateFriendCircleBg(String userId, String friendCircleBg);
+
+    /**
+     * 更新用户聊天背景图
+     *
+     * @param userId 用户id
+     * @param chatBg 聊天背景图地址
+     * @return 最新用户信息
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 20:16:34
+     */
+    UserVO updateChatBg(String userId, String chatBg);
 }

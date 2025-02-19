@@ -82,4 +82,20 @@ public class UserController {
         return GraceJSONResult.ok(userVO);
     }
 
+    /**
+     * 更新用户聊天背景图
+     *
+     * @param userId 用户id
+     * @param chatBg 聊天背景图地址
+     * @return 最新用户信息
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 20:15:49
+     */
+    @PostMapping("/updateChatBg")
+    public GraceJSONResult updateChatBg(@RequestParam("userId") String userId, @RequestParam("chatBg") String chatBg) {
+        UserVO userVO = userService.updateChatBg(userId, chatBg);
+        return GraceJSONResult.ok(userVO);
+    }
+
 }

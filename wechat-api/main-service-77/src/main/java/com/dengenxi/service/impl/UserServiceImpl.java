@@ -175,6 +175,36 @@ public class UserServiceImpl extends BaseInfoProperties implements UserService {
     }
 
     /**
+     * 更新用户聊天背景图
+     *
+     * @param userId 用户id
+     * @param chatBg 聊天背景图地址
+     * @return 最新用户信息
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 20:17:13
+     */
+    @Override
+    public UserVO updateChatBg(String userId, String chatBg) {
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(chatBg)) {
+            GraceException.display(ResponseStatusEnum.USER_UPDATE_ERROR);
+        }
+        UserVO userVO = commonDealUpdateUserInfo(userId, chatBg);
+        return userVO;
+    }
+
+    private UserVO commonDealUpdateUserInfo(String userId, String chatBg) {
+        ModifyUserBO modifyUserBO = new ModifyUserBO();
+        modifyUserBO.setUserId(userId);
+        modifyUserBO.setChatBg(chatBg);
+        // 更新用户信息
+        this.modifyUserInfo(modifyUserBO);
+        // 返回最新用户信息
+        UserVO userVO = getUserInfo(userId, true);
+        return userVO;
+    }
+
+    /**
      * 获取用户二维码
      *
      * @param wechatNum 微信号

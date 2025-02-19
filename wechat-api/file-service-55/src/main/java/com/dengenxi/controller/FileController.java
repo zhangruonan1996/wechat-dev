@@ -74,4 +74,20 @@ public class FileController {
         return GraceJSONResult.ok(userVO);
     }
 
+    /**
+     * 上传聊天背景图
+     *
+     * @param file 背景图文件
+     * @param userId 用户id
+     * @return 聊天背景图
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 20:12:01
+     */
+    @PostMapping("/uploadChatBg")
+    public GraceJSONResult uploadChatBg(@RequestParam("file") MultipartFile file, String userId) throws Exception {
+        UserVO userVO = fileService.uploadChatBg(file, userId);
+        return GraceJSONResult.ok(userVO);
+    }
+
 }
