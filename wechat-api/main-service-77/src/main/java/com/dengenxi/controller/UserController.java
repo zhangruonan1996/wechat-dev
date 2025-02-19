@@ -66,4 +66,20 @@ public class UserController {
         return GraceJSONResult.ok(userVO);
     }
 
+    /**
+     * 更新用户朋友圈背景图
+     *
+     * @param userId 用户id
+     * @param friendCircleBg 朋友圈背景图地址
+     * @return 最新用户信息
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 20:02:42
+     */
+    @PostMapping("/updateFriendCircleBg")
+    public GraceJSONResult updateFriendCircleBg(@RequestParam("userId") String userId, @RequestParam("friendCircleBg") String friendCircleBg) {
+        UserVO userVO = userService.updateFriendCircleBg(userId, friendCircleBg);
+        return GraceJSONResult.ok(userVO);
+    }
+
 }

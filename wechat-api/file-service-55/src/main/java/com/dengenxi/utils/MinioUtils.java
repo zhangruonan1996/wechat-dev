@@ -230,8 +230,8 @@ public class MinioUtils {
      * 根据文件前置查询文件
      *
      * @param bucketName 存储桶名称
-     * @param prefix 前缀
-     * @param recursive 是否使用递归查询
+     * @param prefix     前缀
+     * @param recursive  是否使用递归查询
      * @return MinioItem列表
      * @author qinhao
      * @email coderqin@foxmail.com
@@ -252,9 +252,9 @@ public class MinioUtils {
     /**
      * 通过MultipartFile，上传文件
      *
-     * @param bucketName 存储桶
-     * @param file 文件
-     * @param objectName 对象名
+     * @param bucketName  存储桶
+     * @param file        文件
+     * @param objectName  对象名
      * @param contentType 文件类型
      * @return
      * @author qinhao
@@ -272,7 +272,7 @@ public class MinioUtils {
      * 通过MultipartFile，上传文件
      *
      * @param bucketName 存储桶
-     * @param file 文件
+     * @param file       文件
      * @param objectName 对象名
      * @author qinhao
      * @email coderqin@foxmail.com
@@ -290,7 +290,7 @@ public class MinioUtils {
      *
      * @param bucketName 存储桶
      * @param objectName 对象名称
-     * @param filePath 文件路径(网络)
+     * @param filePath   文件路径(网络)
      * @author qinhao
      * @email coderqin@foxmail.com
      * @date 2025-02-18 22:09:53
@@ -308,12 +308,40 @@ public class MinioUtils {
     }
 
     /**
+     * 上传文件
+     *
+     * @param bucketName  存储桶名称
+     * @param objectName  对象名称
+     * @param inputStream 输入流
+     * @param needUrl     是否需要上传文件的url
+     * @return 上传文件的url
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 19:57:20
+     */
+    public static String uploadFile(String bucketName, String objectName, InputStream inputStream, Boolean needUrl)
+            throws Exception {
+        minioClient.putObject(
+                PutObjectArgs
+                        .builder()
+                        .bucket(bucketName)
+                        .object(objectName)
+                        .stream(inputStream, inputStream.available(), -1)
+                        .build());
+        if (needUrl) {
+            String imageUrl = fileHost + "/" + bucketName + "/" + objectName;
+            return imageUrl;
+        }
+        return "";
+    }
+
+    /**
      * 上传本地文件
      *
      * @param bucketName 存储桶名称
      * @param objectName 对象名称
-     * @param fileName 本地文件路径
-     * @param needUrl 是否需要文件url
+     * @param fileName   本地文件路径
+     * @param needUrl    是否需要文件url
      * @return 文件url
      * @author qinhao
      * @email coderqin@foxmail.com
@@ -337,9 +365,9 @@ public class MinioUtils {
     /**
      * 连接参数
      *
-     * @param bucketName 存储桶
+     * @param bucketName  存储桶
      * @param fileAbsName 文件绝对路径
-     * @param connection 链接对象
+     * @param connection  链接对象
      * @author qinhao
      * @email coderqin@foxmail.com
      * @date 2025-02-18 22:10:51
@@ -354,8 +382,8 @@ public class MinioUtils {
     /**
      * 通过流上传文件
      *
-     * @param bucketName 存储桶
-     * @param objectName 文件对象
+     * @param bucketName  存储桶
+     * @param objectName  文件对象
      * @param inputStream 文件流
      * @return
      * @author qinhao
@@ -389,8 +417,8 @@ public class MinioUtils {
     /**
      * 拷贝文件
      *
-     * @param bucketName 存储桶名称
-     * @param objectName 文件名称
+     * @param bucketName    存储桶名称
+     * @param objectName    文件名称
      * @param srcBucketName 目标bucket名称
      * @param srcObjectName 目标文件名称
      * @author qinhao
@@ -412,8 +440,8 @@ public class MinioUtils {
      * 文件下载
      *
      * @param bucketName 桶名称
-     * @param request 请求
-     * @param response 请求响应
+     * @param request    请求
+     * @param response   请求响应
      * @author qinhao
      * @email coderqin@foxmail.com
      * @date 2025-02-18 22:12:20
@@ -423,7 +451,7 @@ public class MinioUtils {
                                     HttpServletResponse response) {
         try {
             InputStream file = getObject(bucketName, originalName);
-            //文件名乱码处理
+            // 文件名乱码处理
             String useragent = request.getHeader("USER-AGENT").toLowerCase();
             if (useragent.contains("msie") || useragent.contains("like gecko") || useragent.contains("trident")) {
                 originalName = URLEncoder.encode(originalName, StandardCharsets.UTF_8.displayName());
@@ -465,8 +493,8 @@ public class MinioUtils {
      *
      * @param bucketName 存储桶名称
      * @param objectName 文件名称
-     * @param offset 起始字节的位置
-     * @param length 要读取的长度
+     * @param offset     起始字节的位置
+     * @param length     要读取的长度
      * @return 流
      * @author qinhao
      * @email coderqin@foxmail.com
@@ -481,8 +509,8 @@ public class MinioUtils {
      * 获取路径下文件列表
      *
      * @param bucketName bucket名称
-     * @param prefix 文件名称
-     * @param recursive 是否递归查找，如果是false,就模拟文件夹结构查找
+     * @param prefix     文件名称
+     * @param recursive  是否递归查找，如果是false,就模拟文件夹结构查找
      * @return 二进制流
      * @author qinhao
      * @email coderqin@foxmail.com
@@ -496,7 +524,7 @@ public class MinioUtils {
      * 获取路径下文件列表
      *
      * @param bucketName bucket名称
-     * @param recursive 是否递归查找，如果是false,就模拟文件夹结构查找
+     * @param recursive  是否递归查找，如果是false,就模拟文件夹结构查找
      * @return 二进制流
      * @author qinhao
      * @email coderqin@foxmail.com
@@ -524,7 +552,7 @@ public class MinioUtils {
      * 批量删除文件
      *
      * @param bucketName 存储桶名称
-     * @param keys 需要删除的文件列表
+     * @param keys       需要删除的文件列表
      * @author qinhao
      * @email coderqin@foxmail.com
      * @date 2025-02-18 22:14:04
@@ -545,11 +573,11 @@ public class MinioUtils {
      * 生成预览链接，最大7天有效期
      * 如果想永久有效，在 minio 控制台设置仓库访问规则总几率
      *
-     * @param bucketName 存储桶名称
-     * @param object 文件名称
+     * @param bucketName  存储桶名称
+     * @param object      文件名称
      * @param contentType 预览类型 image/gif", "image/jpeg", "image/jpg", "image/png", "application/pdf
-     * @param validTime 有效时间 不能超过7天
-     * @param timeUnit 单位 时 分 秒 天
+     * @param validTime   有效时间 不能超过7天
+     * @param timeUnit    单位 时 分 秒 天
      * @return 预览链接地址
      * @author qinhao
      * @email coderqin@foxmail.com
@@ -580,7 +608,7 @@ public class MinioUtils {
     /**
      * 文件列表
      *
-     * @param limit 最大条数
+     * @param limit      最大条数
      * @param bucketName 存储桶名称
      * @return 文件列表
      * @author qinhao
@@ -608,7 +636,7 @@ public class MinioUtils {
     /**
      * 网络文件转储 minio
      *
-     * @param httpUrl 文件地址
+     * @param httpUrl    文件地址
      * @param bucketName 存储桶名称
      * @author qinhao
      * @email coderqin@foxmail.com
@@ -695,7 +723,7 @@ public class MinioUtils {
      * 下载并压缩 Minio 桶中的文件，并通过 HTTP 响应输出
      *
      * @param bucketName 存储桶名称
-     * @param response HTTP 响应对象
+     * @param response   HTTP 响应对象
      * @author qinhao
      * @email coderqin@foxmail.com
      * @date 2025-02-18 22:20:55
@@ -709,7 +737,7 @@ public class MinioUtils {
      *
      * @param bucketName 存储桶名称
      * @param folderPath 文件夹路径（可为空）
-     * @param response HTTP 响应对象
+     * @param response   HTTP 响应对象
      * @author qinhao
      * @email coderqin@foxmail.com
      * @date 2025-02-18 22:21:17

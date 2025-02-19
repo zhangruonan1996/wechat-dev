@@ -58,4 +58,20 @@ public class FileController {
         return qrCodeUrl;
     }
 
+    /**
+     * 上传朋友圈背景图
+     *
+     * @param file 朋友圈背景图文件
+     * @param userId 用户id
+     * @return
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 19:53:42
+     */
+    @PostMapping("/uploadFriendCircleBg")
+    public GraceJSONResult uploadFace(@RequestParam("file") MultipartFile file, String userId) throws Exception {
+        UserVO userVO = fileService.uploadFriendCircleBg(file, userId);
+        return GraceJSONResult.ok(userVO);
+    }
+
 }

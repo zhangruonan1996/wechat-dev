@@ -136,4 +136,70 @@ public class FileServiceImpl implements FileService {
         }
         return null;
     }
+
+    /**
+     * 上传朋友圈背景图
+     *
+     * @param file 朋友圈背景图文件
+     * @param userId 用户id
+     * @return
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 19:54:35
+     */
+    @Override
+    public UserVO uploadFriendCircleBg(MultipartFile file, String userId) throws Exception {
+        if (StringUtils.isBlank(userId)) {
+            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+        // 获取文件原始名称
+        String filename = file.getOriginalFilename();
+        if (StringUtils.isBlank(filename)) {
+            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        filename = "friendCircleBg" + "/" + userId + "/" + dealWithoutFilename(filename);
+        String imageUrl = MinioUtils.uploadFile(minioConfig.getBucketName(), filename, file.getInputStream(), true);
+
+        // 微服务远程调用更新用户头像到数据库
+        GraceJSONResult graceJSONResult = userInfoMicroServiceFeign.updateFriendCircleBg(userId, imageUrl);
+        Object data = graceJSONResult.getData();
+
+        String json = JsonUtils.objectToJson(data);
+        UserVO userVO = JsonUtils.jsonToPojo(json, UserVO.class);
+
+        return userVO;
+    }
+
+    /**
+     * 生成新的文件名（带原文件名）
+     *
+     * @param filename 文件名
+     * @return 新的文件名
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 19:52:40
+     */
+    private String dealWithFilename(String filename) {
+        String suffixName = filename.substring(filename.lastIndexOf("."));
+        String originFileName = filename.substring(0, filename.lastIndexOf("."));
+        String uuid = UUID.randomUUID().toString();
+        return originFileName + "-" + uuid + suffixName;
+    }
+
+    /**
+     * 生成新的文件名（不带原文件名）
+     *
+     * @param filename 文件名
+     * @return 新的文件名
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-02-19 19:52:10
+     */
+    private String dealWithoutFilename(String filename) {
+        String suffixName = filename.substring(filename.lastIndexOf("."));
+        String uuid = UUID.randomUUID().toString();
+        return uuid + suffixName;
+    }
+
 }
