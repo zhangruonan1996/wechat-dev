@@ -20,4 +20,25 @@
         id, my_id, friend_id, friend_remark, chat_bg, is_msg_ignore, is_black, created_time, updated_time
     </sql>
 
+    <select id="queryMyFriends" resultType="org.zhangruonan.vo.ContactsVO">
+        select
+            fs.id as friendshipId,
+            fs.my_id as mySelfId,
+            fs.friend_id as myFriendId,
+            u.face as myFriendFace,
+            u.nickname as myFriendNickname,
+            fs.friend_remark as myFriendRemark,
+            fs.chat_bg as chatBg,
+            fs.is_msg_ignore as isMsgIgnore,
+            fs.is_black as isBlack
+        from
+            friendship fs
+        left join
+            users u
+        on
+            fs.friend_id = u.id
+        where
+            fs.my_id = #{paramMap.myId}
+    </select>
+
 </mapper>
