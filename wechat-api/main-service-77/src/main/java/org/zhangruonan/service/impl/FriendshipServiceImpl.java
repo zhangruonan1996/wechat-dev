@@ -132,4 +132,34 @@ public class FriendshipServiceImpl extends BaseInfoProperties implements Friends
         friendshipMapper.update(lambdaUpdateWrapper);
     }
 
+    /**
+     * 删除好友关系
+     *
+     * @param friendId 好友id
+     * @param request 本次请求对象
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 23:21:29
+     */
+    @Override
+    public void delete(String friendId, HttpServletRequest request) {
+        // 获取当前请求用户id
+        String myId = request.getHeader(HEADER_USER_ID);
+        // 参数校验
+        if (StringUtils.isBlank(myId) || StringUtils.isBlank(friendId)) {
+            GraceException.display(ResponseStatusEnum.FAILED);
+        }
+
+        // 双向删除朋友关系
+        LambdaQueryWrapper<Friendship> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Friendship::getMyId, myId);
+        lambdaQueryWrapper.eq(Friendship::getFriendId, friendId);
+        friendshipMapper.delete(lambdaQueryWrapper);
+
+        LambdaQueryWrapper<Friendship> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Friendship::getMyId, friendId);
+        queryWrapper.eq(Friendship::getFriendId, myId);
+        friendshipMapper.delete(queryWrapper);
+    }
+
 }

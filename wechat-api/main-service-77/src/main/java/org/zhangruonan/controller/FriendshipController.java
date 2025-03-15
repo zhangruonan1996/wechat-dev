@@ -113,4 +113,20 @@ public class FriendshipController {
         return GraceJSONResult.ok(friendshipService.queryMyFriends(request, true));
     }
 
+    /**
+     * 删除好友关系
+     *
+     * @param friendId 好友id
+     * @param request 本次请求对象
+     * @return 请求结果反馈
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 23:20:32
+     */
+    @PostMapping("/delete")
+    public GraceJSONResult delete(String friendId, HttpServletRequest request) {
+        friendshipService.delete(friendId, request);
+        return GraceJSONResult.ok();
+    }
+
 }

@@ -59,4 +59,15 @@ public interface FriendshipService {
      * @date 2025-03-15 23:05:14
      */
     void updateBlackList(String friendId, HttpServletRequest request, YesOrNo yesOrNo);
+
+    /**
+     * 删除好友关系
+     *
+     * @param friendId 好友id
+     * @param request 本次请求对象
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 23:21:13
+     */
+    void delete(String friendId, HttpServletRequest request);
 }
