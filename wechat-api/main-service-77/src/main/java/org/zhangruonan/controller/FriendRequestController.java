@@ -41,8 +41,8 @@ public class FriendRequestController {
     /**
      * 获取好友申请列表
      *
-     * @param request 本次请求对象
-     * @param page 当前页（不传默认为1）
+     * @param request  本次请求对象
+     * @param page     当前页（不传默认为1）
      * @param pageSize 每页显示的数量（不传默认为10）
      * @return 好友申请列表分页数据
      * @author qinhao
@@ -54,6 +54,22 @@ public class FriendRequestController {
                                                  @RequestParam(defaultValue = "1", name = "page") Integer page,
                                                  @RequestParam(defaultValue = "10", name = "pageSize") Integer pageSize) {
         return GraceJSONResult.ok(friendRequestService.queryNewFriendRequest(request, page, pageSize));
+    }
+
+    /**
+     * 通过好友申请
+     *
+     * @param friendRequestId 申请id
+     * @param friendRemark 好友备注
+     * @return 结果反馈
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 15:39:45
+     */
+    @PostMapping("/pass")
+    public GraceJSONResult passFriendRequest(String friendRequestId, String friendRemark) {
+        friendRequestService.passFriendRequest(friendRequestId, friendRemark);
+        return GraceJSONResult.ok();
     }
 
 }

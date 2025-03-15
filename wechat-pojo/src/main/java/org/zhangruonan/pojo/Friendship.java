@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.zhangruonan.enums.YesOrNo;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -56,14 +57,14 @@ public class Friendship implements Serializable {
      * 0-打扰，不忽略消息(默认)
      * 1-免打扰，忽略消息
      */
-    private Integer isMsgIgnore;
+    private Integer isMsgIgnore = YesOrNo.NO.type;
 
     /**
      * 是否拉黑
      * 0-好友(默认)
      * 1-已拉黑
      */
-    private Integer isBlack;
+    private Integer isBlack = YesOrNo.NO.type;
 
     /**
      * 创建时间

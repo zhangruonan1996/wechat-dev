@@ -35,4 +35,15 @@ public interface FriendRequestService {
      * @date 2025-03-15 13:39:25
      */
     PagedGridResult queryNewFriendRequest(HttpServletRequest request, Integer page, Integer pageSize);
+
+    /**
+     * 通过好友申请
+     *
+     * @param friendRequestId 申请id
+     * @param friendRemark 好友备注
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 15:41:33
+     */
+    void passFriendRequest(String friendRequestId, String friendRemark);
 }
