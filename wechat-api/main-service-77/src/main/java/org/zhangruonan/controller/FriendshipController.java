@@ -47,7 +47,7 @@ public class FriendshipController {
      */
     @PostMapping("/queryMyFriends")
     public GraceJSONResult queryMyFriends(HttpServletRequest request) {
-        return GraceJSONResult.ok(friendshipService.queryMyFriends(request));
+        return GraceJSONResult.ok(friendshipService.queryMyFriends(request, false));
     }
 
     /**
@@ -97,6 +97,20 @@ public class FriendshipController {
     public GraceJSONResult moveOutBlack(String friendId, HttpServletRequest request) {
         friendshipService.updateBlackList(friendId, request, YesOrNo.NO);
         return GraceJSONResult.ok();
+    }
+
+    /**
+     * 获取当前用户的黑名单列表
+     *
+     * @param request 本次请求对象
+     * @return 当前用户的黑名单列表
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 23:14:04
+     */
+    @PostMapping("/queryMyBlackList")
+    public GraceJSONResult queryMyBlackList(HttpServletRequest request) {
+        return GraceJSONResult.ok(friendshipService.queryMyFriends(request, true));
     }
 
 }

@@ -35,7 +35,7 @@ public interface FriendshipService {
      * @email coderqin@foxmail.com
      * @date 2025-03-15 16:27:05
      */
-    List<ContactsVO> queryMyFriends(HttpServletRequest request);
+    List<ContactsVO> queryMyFriends(HttpServletRequest request, Boolean needBlack);
 
     /**
      * 修改好友备注

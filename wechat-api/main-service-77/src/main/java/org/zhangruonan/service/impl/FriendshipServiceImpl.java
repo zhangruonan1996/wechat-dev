@@ -63,10 +63,13 @@ public class FriendshipServiceImpl extends BaseInfoProperties implements Friends
      * @date 2025-03-15 16:27:37
      */
     @Override
-    public List<ContactsVO> queryMyFriends(HttpServletRequest request) {
+    public List<ContactsVO> queryMyFriends(HttpServletRequest request, Boolean needBlack) {
         String myId = request.getHeader(HEADER_USER_ID);
         Map<String, Object> map = new HashMap<>();
         map.put("myId", myId);
+        if (needBlack) {
+            map.put("needBlack", YesOrNo.YES.type);
+        }
         List<ContactsVO> list = friendshipMapper.queryMyFriends(map);
         return list;
     }
