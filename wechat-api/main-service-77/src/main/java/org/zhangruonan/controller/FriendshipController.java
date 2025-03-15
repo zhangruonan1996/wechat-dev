@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.zhangruonan.enums.YesOrNo;
 import org.zhangruonan.grace.result.GraceJSONResult;
 import org.zhangruonan.service.FriendshipService;
 
@@ -63,6 +64,38 @@ public class FriendshipController {
     @PostMapping("/updateFriendRemark")
     public GraceJSONResult updateFriendRemark(String friendId, String friendRemark, HttpServletRequest request) {
         friendshipService.updateFriendRemark(friendId, friendRemark, request);
+        return GraceJSONResult.ok();
+    }
+
+    /**
+     * 将好友加入黑名单
+     *
+     * @param friendId 好友id
+     * @param request 本次请求对象
+     * @return 结果反馈
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 22:58:22
+     */
+    @PostMapping("/tobeBlack")
+    public GraceJSONResult tobeBlack(String friendId, HttpServletRequest request) {
+        friendshipService.updateBlackList(friendId, request, YesOrNo.YES);
+        return GraceJSONResult.ok();
+    }
+
+    /**
+     * 将好友移出黑名单
+     *
+     * @param friendId 好友id
+     * @param request 本次请求对象
+     * @return 结果反馈
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 22:58:28
+     */
+    @PostMapping("/moveOutBlack")
+    public GraceJSONResult moveOutBlack(String friendId, HttpServletRequest request) {
+        friendshipService.updateBlackList(friendId, request, YesOrNo.NO);
         return GraceJSONResult.ok();
     }
 

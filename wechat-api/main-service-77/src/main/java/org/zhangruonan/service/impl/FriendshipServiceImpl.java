@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zhangruonan.base.BaseInfoProperties;
+import org.zhangruonan.enums.YesOrNo;
 import org.zhangruonan.exceptions.GraceException;
 import org.zhangruonan.grace.result.ResponseStatusEnum;
 import org.zhangruonan.mapper.FriendshipMapper;
@@ -16,6 +17,7 @@ import org.zhangruonan.pojo.Friendship;
 import org.zhangruonan.service.FriendshipService;
 import org.zhangruonan.vo.ContactsVO;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,4 +98,35 @@ public class FriendshipServiceImpl extends BaseInfoProperties implements Friends
         // 更新数据库结果
         friendshipMapper.update(lambdaUpdateWrapper);
     }
+
+    /**
+     * 更新黑名单
+     *
+     * @param friendId 拉黑用户id
+     * @param yesOrNo 是否拉黑
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 23:05:47
+     */
+    @Override
+    public void updateBlackList(String friendId, HttpServletRequest request, YesOrNo yesOrNo) {
+        // 参数校验
+        if (StringUtils.isBlank(friendId)) {
+            GraceException.display(ResponseStatusEnum.FAILED);
+        }
+        // 获取当前请求用户id
+        String myId = request.getHeader(HEADER_USER_ID);
+        if (StringUtils.isBlank(myId)) {
+            GraceException.display(ResponseStatusEnum.UN_LOGIN);
+        }
+        // 构造更新条件
+        LambdaUpdateWrapper<Friendship> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        lambdaUpdateWrapper.eq(Friendship::getMyId, myId);
+        lambdaUpdateWrapper.eq(Friendship::getFriendId, friendId);
+        lambdaUpdateWrapper.set(Friendship::getIsBlack, yesOrNo.type);
+        lambdaUpdateWrapper.set(Friendship::getUpdatedTime, LocalDateTime.now());
+        // 更新数据库数据
+        friendshipMapper.update(lambdaUpdateWrapper);
+    }
+
 }

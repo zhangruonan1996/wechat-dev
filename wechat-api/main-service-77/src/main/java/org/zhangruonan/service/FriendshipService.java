@@ -1,6 +1,7 @@
 package org.zhangruonan.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.zhangruonan.enums.YesOrNo;
 import org.zhangruonan.pojo.Friendship;
 import org.zhangruonan.vo.ContactsVO;
 
@@ -47,4 +48,15 @@ public interface FriendshipService {
      * @date 2025-03-15 22:50:22
      */
     void updateFriendRemark(String friendId, String friendRemark, HttpServletRequest request);
+
+    /**
+     * 更新黑名单
+     *
+     * @param friendId 拉黑用户id
+     * @param yesOrNo 是否拉黑
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 23:05:14
+     */
+    void updateBlackList(String friendId, HttpServletRequest request, YesOrNo yesOrNo);
 }
