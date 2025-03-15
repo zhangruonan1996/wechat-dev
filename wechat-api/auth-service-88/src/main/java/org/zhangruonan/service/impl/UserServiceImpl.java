@@ -26,7 +26,7 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl extends BaseInfoProperties implements UserService {
 
-    private static final String USER_DEFAULT_AVATAR = "https://sns-avatar-qc.xhscdn.com/avatar/61cedc079b65e05ce4e2070a.jpg?imageView2/2/w/540/format/webp|imageMogr2/strip2";
+    private static final String USER_DEFAULT_AVATAR = "http://192.168.76.20:9000/wechat/face/default/avatar.jpeg";
 
     @Resource
     private UserMapper userMapper;

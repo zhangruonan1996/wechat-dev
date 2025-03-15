@@ -24,7 +24,7 @@ public class FriendshipController {
      * 获取朋友关系
      *
      * @param friendId 好友id
-     * @param request 本次请求对象
+     * @param request  本次请求对象
      * @return 朋友关系
      * @author qinhao
      * @email coderqin@foxmail.com
@@ -47,6 +47,23 @@ public class FriendshipController {
     @PostMapping("/queryMyFriends")
     public GraceJSONResult queryMyFriends(HttpServletRequest request) {
         return GraceJSONResult.ok(friendshipService.queryMyFriends(request));
+    }
+
+    /**
+     * 修改好友备注
+     *
+     * @param friendId     好友id
+     * @param friendRemark 备注
+     * @param request      本次请求对象
+     * @return 修改结果反馈
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 22:47:48
+     */
+    @PostMapping("/updateFriendRemark")
+    public GraceJSONResult updateFriendRemark(String friendId, String friendRemark, HttpServletRequest request) {
+        friendshipService.updateFriendRemark(friendId, friendRemark, request);
+        return GraceJSONResult.ok();
     }
 
 }

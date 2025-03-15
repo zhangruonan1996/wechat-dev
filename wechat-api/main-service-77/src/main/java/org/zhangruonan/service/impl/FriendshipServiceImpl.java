@@ -1,11 +1,16 @@
 package org.zhangruonan.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zhangruonan.base.BaseInfoProperties;
+import org.zhangruonan.exceptions.GraceException;
+import org.zhangruonan.grace.result.ResponseStatusEnum;
 import org.zhangruonan.mapper.FriendshipMapper;
 import org.zhangruonan.pojo.Friendship;
 import org.zhangruonan.service.FriendshipService;
@@ -62,5 +67,33 @@ public class FriendshipServiceImpl extends BaseInfoProperties implements Friends
         map.put("myId", myId);
         List<ContactsVO> list = friendshipMapper.queryMyFriends(map);
         return list;
+    }
+
+    /**
+     * 修改好友备注
+     *
+     * @param friendId 好友id
+     * @param friendRemark 备注
+     * @param request 本次请求对象
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 22:50:48
+     */
+    @Override
+    @Transactional
+    public void updateFriendRemark(String friendId, String friendRemark, HttpServletRequest request) {
+        // 参数校验
+        if (StringUtils.isBlank(friendId) || StringUtils.isBlank(friendRemark)) {
+            GraceException.display(ResponseStatusEnum.FAILED);
+        }
+        // 获取当前请求用户id
+        String myId = request.getHeader(HEADER_USER_ID);
+        // 构造更新条件
+        LambdaUpdateWrapper<Friendship> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        lambdaUpdateWrapper.eq(Friendship::getMyId, myId);
+        lambdaUpdateWrapper.eq(Friendship::getFriendId, friendId);
+        lambdaUpdateWrapper.set(Friendship::getFriendRemark, friendRemark);
+        // 更新数据库结果
+        friendshipMapper.update(lambdaUpdateWrapper);
     }
 }

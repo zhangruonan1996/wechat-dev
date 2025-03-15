@@ -35,4 +35,16 @@ public interface FriendshipService {
      * @date 2025-03-15 16:27:05
      */
     List<ContactsVO> queryMyFriends(HttpServletRequest request);
+
+    /**
+     * 修改好友备注
+     *
+     * @param friendId 好友id
+     * @param friendRemark 备注
+     * @param request 本次请求对象
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 22:50:22
+     */
+    void updateFriendRemark(String friendId, String friendRemark, HttpServletRequest request);
 }
