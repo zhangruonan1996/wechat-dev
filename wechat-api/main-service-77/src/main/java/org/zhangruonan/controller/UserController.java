@@ -1,7 +1,9 @@
 package org.zhangruonan.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.zhangruonan.bo.ModifyUserBO;
 import org.zhangruonan.grace.result.GraceJSONResult;
+import org.zhangruonan.pojo.User;
 import org.zhangruonan.service.UserService;
 import org.zhangruonan.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +98,20 @@ public class UserController {
     public GraceJSONResult updateChatBg(@RequestParam("userId") String userId, @RequestParam("chatBg") String chatBg) {
         UserVO userVO = userService.updateChatBg(userId, chatBg);
         return GraceJSONResult.ok(userVO);
+    }
+
+    /**
+     * 根据手机号或者微信号查询用户
+     *
+     * @param queryString 手机号或微信号
+     * @return 用户信息
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 11:49:15
+     */
+    @PostMapping("/queryFriend")
+    public GraceJSONResult queryFriend(@RequestParam("queryString") String queryString, HttpServletRequest request) {
+        return GraceJSONResult.ok(userService.getUserByWechatNumOrMobile(queryString, request));
     }
 
 }

@@ -1,5 +1,6 @@
 package org.zhangruonan.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.zhangruonan.bo.ModifyUserBO;
 import org.zhangruonan.pojo.User;
 import org.zhangruonan.vo.UserVO;
@@ -79,4 +80,15 @@ public interface UserService {
      * @date 2025-02-19 20:16:34
      */
     UserVO updateChatBg(String userId, String chatBg);
+
+    /**
+     * 根据手机号或者微信号查询用户
+     *
+     * @param queryString 手机号或微信号
+     * @return 匹配的用户数据
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 11:47:49
+     */
+    User getUserByWechatNumOrMobile(String queryString, HttpServletRequest request);
 }

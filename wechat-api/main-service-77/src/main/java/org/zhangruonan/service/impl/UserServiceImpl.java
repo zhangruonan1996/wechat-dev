@@ -1,5 +1,7 @@
 package org.zhangruonan.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.zhangruonan.base.BaseInfoProperties;
 import org.zhangruonan.bo.ModifyUserBO;
 import org.zhangruonan.exceptions.GraceException;
@@ -190,6 +192,37 @@ public class UserServiceImpl extends BaseInfoProperties implements UserService {
         }
         UserVO userVO = commonDealUpdateUserInfo(userId, chatBg);
         return userVO;
+    }
+
+    /**
+     * 根据手机号或者微信号查询用户
+     *
+     * @param queryString 手机号或微信号
+     * @return 匹配的用户数据
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-15 11:48:30
+     */
+    @Override
+    public User getUserByWechatNumOrMobile(String queryString, HttpServletRequest request) {
+        // 如果用户未传递任何参数，直接抛出异常返回错误信息
+        if (queryString == null || queryString.isEmpty()) {
+            GraceException.display(ResponseStatusEnum.FAILED);
+        }
+        // 构造查询条件并从数据库查询数据
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getWechatNum, queryString).or().eq(User::getMobile, queryString);
+        User friend = userMapper.selectOne(lambdaQueryWrapper);
+        // 如果查询的用户不存在，抛出异常返回错误信息
+        if (friend == null) {
+            GraceException.display(ResponseStatusEnum.FRIEND_NOT_EXIST_ERROR);
+        }
+        // 不能添加自己为好友
+        String myId = request.getHeader(HEADER_USER_ID);
+        if (myId.equals(friend.getId())) {
+            GraceException.display(ResponseStatusEnum.CAN_NOT_ADD_SELF_FRIEND_ERROR);
+        }
+        return friend;
     }
 
     private UserVO commonDealUpdateUserInfo(String userId, String chatBg) {
