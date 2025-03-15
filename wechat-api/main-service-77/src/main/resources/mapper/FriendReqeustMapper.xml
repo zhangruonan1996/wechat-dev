@@ -18,4 +18,27 @@
         id, my_id, friend_id, friend_remark, verify_message, verify_status, request_time
     </sql>
 
+    <select id="queryNewFriendList" resultType="org.zhangruonan.vo.NewFriendsVO">
+        select
+            fr.id as friendRequestId,
+            u.id as myFriendId,
+            u.face as myFriendFace,
+            u.nickname as myFriendNickname,
+            fr.verify_message as verifyMessage,
+            fr.verify_status as verifyStatus,
+            fr.request_time as requestTime
+        from
+            friend_request fr
+        left join
+            users u
+        on
+            fr.my_id = u.id
+        <where>
+            fr.friend_id = #{paramMap.mySelfId}
+        </where>
+        order by
+            fr.request_time
+        desc
+    </select>
+
 </mapper>

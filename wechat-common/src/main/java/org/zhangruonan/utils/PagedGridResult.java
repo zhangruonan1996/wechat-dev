@@ -3,18 +3,30 @@ package org.zhangruonan.utils;
 import java.util.List;
 
 /**
- * 
- * @Title: PagedGridResult.java
- * @Package com.imooc.utils
- * @Description: 用来返回分页Grid的数据格式
- * Copyright: Copyright (c) 2021
+ * 返回分页数据工具类
+ *
+ * @author qinhao
+ * @email coderqin@foxmail.com
+ * @date 2025-03-15 13:42:50
  */
 public class PagedGridResult {
-	
-	private long page;			// 当前页数
-	private long total;			// 总页数
-	private long records;		// 总记录数
-	private List<?> rows;		// 每行显示的内容
+
+	/**
+	 * 当前页数
+	 */
+	private long page;
+	/**
+	 * 总页数
+	 */
+	private long total;
+	/**
+	 * 总记录数
+	 */
+	private long records;
+	/**
+	 * 每行显示的内容
+	 */
+	private List<?> rows;
 
 	public long getPage() {
 		return page;
