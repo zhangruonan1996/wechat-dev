@@ -35,4 +35,25 @@ public interface FriendCircleService {
      */
     PagedGridResult queryList(String userId, Integer page, Integer pageSize);
 
+    /**
+     * 点赞朋友圈
+     *
+     * @param friendCircleId 朋友圈id
+     * @param request 本次请求对象
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 12:19:21
+     */
+    void like(String friendCircleId, HttpServletRequest request);
+
+    /**
+     * 取消点赞朋友圈
+     *
+     * @param friendCircleId 朋友圈id
+     * @param request 本次请求对象
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 12:19:53
+     */
+    void unlike(String friendCircleId, HttpServletRequest request);
 }

@@ -1,5 +1,6 @@
 package org.zhangruonan.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,11 +13,16 @@ import org.zhangruonan.base.BaseInfoProperties;
 import org.zhangruonan.bo.FriendCircleBO;
 import org.zhangruonan.exceptions.GraceException;
 import org.zhangruonan.grace.result.ResponseStatusEnum;
+import org.zhangruonan.mapper.FriendCircleLikedMapper;
 import org.zhangruonan.mapper.FriendCircleMapper;
 import org.zhangruonan.pojo.FriendCircle;
+import org.zhangruonan.pojo.FriendCircleLiked;
+import org.zhangruonan.pojo.User;
 import org.zhangruonan.service.FriendCircleService;
+import org.zhangruonan.service.UserService;
 import org.zhangruonan.utils.PagedGridResult;
 import org.zhangruonan.vo.FriendCircleVO;
+import org.zhangruonan.vo.UserVO;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -33,6 +39,12 @@ public class FriendCircleServiceImpl extends BaseInfoProperties implements Frien
 
     @Resource
     private FriendCircleMapper friendCircleMapper;
+
+    @Resource
+    private UserService userService;
+
+    @Resource
+    private FriendCircleLikedMapper friendCircleLikedMapper;
 
     /**
      * 发表朋友圈
@@ -87,5 +99,102 @@ public class FriendCircleServiceImpl extends BaseInfoProperties implements Frien
         // 查询数据库数据
         friendCircleMapper.queryFriendCircleList(pageInfo, map);
         return setterPagedGridPlus(pageInfo);
+    }
+
+    /**
+     * 点赞朋友圈
+     *
+     * @param friendCircleId 朋友圈id
+     * @param request 本次请求对象
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 12:20:20
+     */
+    @Override
+    @Transactional
+    public void like(String friendCircleId, HttpServletRequest request) {
+        // 获取当前请求用户id
+        String userId = request.getHeader(HEADER_USER_ID);
+        // 参数校验
+        if (StringUtils.isBlank(userId)) {
+            GraceException.display(ResponseStatusEnum.FAILED);
+        }
+
+        // 先判断是否已经点赞过，不能重复点赞
+        LambdaQueryWrapper<FriendCircleLiked> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(FriendCircleLiked::getFriendCircleId, friendCircleId);
+        lambdaQueryWrapper.eq(FriendCircleLiked::getLikedUserId, userId);
+        FriendCircleLiked dbFriendCircleLiked = friendCircleLikedMapper.selectOne(lambdaQueryWrapper);
+        if (dbFriendCircleLiked != null) {
+            GraceException.display(ResponseStatusEnum.FAILED);
+        }
+
+        // 根据朋友圈的主键查询朋友圈信息
+        FriendCircle friendCircle = selectFriendCircleById(friendCircleId);
+        // 根据用户主键id查询用户数据
+        User user = userService.queryById(userId);
+
+        // 构建点赞对象
+        FriendCircleLiked friendCircleLiked = new FriendCircleLiked();
+        friendCircleLiked.setFriendCircleId(friendCircleId);
+        friendCircleLiked.setBelongUserId(friendCircle.getUserId());
+        friendCircleLiked.setLikedUserId(userId);
+        friendCircleLiked.setLikedUserName(user.getNickname());
+        friendCircleLiked.setCreatedTime(LocalDateTime.now());
+
+        // 数据库插入点赞信息
+        friendCircleLikedMapper.insert(friendCircleLiked);
+
+        // 点赞过后朋友圈的点赞数累加1
+        redis.increment(REDIS_FRIEND_CIRCLE_LIKED_COUNTS + ":" + friendCircleId, 1);
+
+        // 标记哪个用户点赞过朋友圈
+        redis.setnx(REDIS_DOES_USER_LIKE_FRIEND_CIRCLE + ":" + friendCircleId + ":" + userId, userId);
+    }
+
+    /**
+     * 根据朋友圈主键id查询朋友圈数据
+     *
+     * @param friendCircleId 朋友圈主键id
+     * @return 朋友圈数据
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 12:25:20
+     */
+    private FriendCircle selectFriendCircleById(String friendCircleId) {
+        return friendCircleMapper.selectById(friendCircleId);
+    }
+
+    /**
+     * 取消点赞朋友圈
+     *
+     * @param friendCircleId 朋友圈id
+     * @param request 本次请求对象
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 12:20:24
+     */
+    @Override
+    @Transactional
+    public void unlike(String friendCircleId, HttpServletRequest request) {
+        // 获取请求用户id
+        String userId = request.getHeader(HEADER_USER_ID);
+        if (StringUtils.isBlank(userId)) {
+            GraceException.display(ResponseStatusEnum.FAILED);
+        }
+
+        // 构建删除条件
+        LambdaQueryWrapper<FriendCircleLiked> deleteWrapper = new LambdaQueryWrapper<>();
+        deleteWrapper.eq(FriendCircleLiked::getFriendCircleId, friendCircleId);
+        deleteWrapper.eq(FriendCircleLiked::getLikedUserId, userId);
+        // 删除数据库数据
+        friendCircleLikedMapper.delete(deleteWrapper);
+
+        // 取消点赞过后朋友圈的点赞数累减1
+        redis.decrement(REDIS_FRIEND_CIRCLE_LIKED_COUNTS + ":" + friendCircleId, 1);
+
+        // 删除标记哪个用户点赞过朋友圈
+        redis.del(REDIS_DOES_USER_LIKE_FRIEND_CIRCLE + ":" + friendCircleId + ":" + userId);
+
     }
 }

@@ -51,4 +51,36 @@ public class FriendCircleController {
         return GraceJSONResult.ok(friendCircleService.queryList(userId, page, pageSize));
     }
 
+    /**
+     * 点赞朋友的朋友圈
+     *
+     * @param friendCircleId 要进行点赞的朋友圈id
+     * @param request 本次请求对象（用于获取请求用户id）
+     * @return 点赞结果反馈
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 12:17:10
+     */
+    @PostMapping("/like")
+    public GraceJSONResult like(String friendCircleId, HttpServletRequest request) {
+        friendCircleService.like(friendCircleId, request);
+        return GraceJSONResult.ok();
+    }
+
+    /**
+     * 取消点赞朋友的朋友圈
+     *
+     * @param friendCircleId 要取消点赞朋友圈id
+     * @param request 本次请求对象（用于获取请求用户id）
+     * @return 取消点赞结果反馈
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 12:17:53
+     */
+    @PostMapping("/unlike")
+    public GraceJSONResult unlike(String friendCircleId, HttpServletRequest request) {
+        friendCircleService.unlike(friendCircleId, request);
+        return GraceJSONResult.ok();
+    }
+
 }
