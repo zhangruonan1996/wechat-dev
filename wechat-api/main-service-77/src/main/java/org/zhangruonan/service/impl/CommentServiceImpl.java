@@ -4,11 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zhangruonan.base.BaseInfoProperties;
 import org.zhangruonan.bo.CommentBO;
+import org.zhangruonan.exceptions.GraceException;
+import org.zhangruonan.grace.result.ResponseStatusEnum;
 import org.zhangruonan.mapper.CommentMapper;
 import org.zhangruonan.pojo.Comment;
 import org.zhangruonan.pojo.User;
@@ -81,5 +84,30 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
         Map<String, Object> map = new HashMap<>();
         map.put("friendCircleId", friendCircleId);
         return commentMapper.getFriendCircleComments(map);
+    }
+
+    /**
+     * 删除某条评论
+     *
+     * @param commentUserId 评论用户id
+     * @param commentId 评论id
+     * @param friendCircleId 朋友圈id
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 17:12:36
+     */
+    @Override
+    public void deleteComment(String commentUserId, String commentId, String friendCircleId) {
+        // 参数校验
+        if (StringUtils.isEmpty(commentUserId) || StringUtils.isEmpty(commentId) || StringUtils.isEmpty(friendCircleId)) {
+            GraceException.display(ResponseStatusEnum.FAILED);
+        }
+        // 构建删除条件
+        LambdaQueryWrapper<Comment> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Comment::getId, commentId);
+        lambdaQueryWrapper.eq(Comment::getCommentUserId, commentUserId);
+        lambdaQueryWrapper.eq(Comment::getFriendCircleId, friendCircleId);
+        // 删除数据
+        commentMapper.delete(lambdaQueryWrapper);
     }
 }

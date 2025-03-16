@@ -51,4 +51,21 @@ public class CommentController {
         return GraceJSONResult.ok(commentService.queryAllComment(friendCircleId));
     }
 
+    /**
+     * 删除某条评论
+     *
+     * @param commentUserId 评论用户id
+     * @param commentId 评论id
+     * @param friendCircleId 朋友圈id
+     * @return 删除结果反馈
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 13:59:13
+     */
+    @PostMapping("/delete")
+    public GraceJSONResult deleteComment(String commentUserId, String commentId, String friendCircleId) {
+        commentService.deleteComment(commentUserId, commentId, friendCircleId);
+        return GraceJSONResult.ok();
+    }
+
 }

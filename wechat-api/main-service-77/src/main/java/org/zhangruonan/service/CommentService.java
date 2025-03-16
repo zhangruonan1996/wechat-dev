@@ -35,4 +35,15 @@ public interface CommentService {
      */
     List<CommentVO> queryAllComment(String friendCircleId);
 
+    /**
+     * 删除某条评论
+     *
+     * @param commentUserId 评论用户id
+     * @param commentId 评论id
+     * @param friendCircleId 朋友圈id
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 17:11:56
+     */
+    void deleteComment(String commentUserId, String commentId, String friendCircleId);
 }
