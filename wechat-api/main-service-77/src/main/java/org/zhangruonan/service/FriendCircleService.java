@@ -2,7 +2,10 @@ package org.zhangruonan.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.zhangruonan.bo.FriendCircleBO;
+import org.zhangruonan.pojo.FriendCircleLiked;
 import org.zhangruonan.utils.PagedGridResult;
+
+import java.util.List;
 
 /**
  * @author qinhao
@@ -56,6 +59,17 @@ public interface FriendCircleService {
      * @date 2025-03-16 12:19:53
      */
     void unlike(String friendCircleId, HttpServletRequest request);
+
+    /**
+     * 根据朋友圈id查询点赞的朋友列表
+     *
+     * @param friendCircleId 朋友圈id
+     * @return 点赞过的朋友列表
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 13:14:11
+     */
+    List<FriendCircleLiked> queryLikedFriends(String friendCircleId);
 
     /**
      * 判断用户是否点赞过朋友圈

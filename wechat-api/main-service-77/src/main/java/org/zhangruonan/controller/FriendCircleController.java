@@ -5,7 +5,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 import org.zhangruonan.bo.FriendCircleBO;
 import org.zhangruonan.grace.result.GraceJSONResult;
+import org.zhangruonan.pojo.FriendCircleLiked;
 import org.zhangruonan.service.FriendCircleService;
+
+import java.util.List;
 
 /**
  * @author qinhao
@@ -81,6 +84,20 @@ public class FriendCircleController {
     public GraceJSONResult unlike(String friendCircleId, HttpServletRequest request) {
         friendCircleService.unlike(friendCircleId, request);
         return GraceJSONResult.ok();
+    }
+
+    /**
+     * 查询某条朋友圈的点赞好友列表
+     *
+     * @param friendCircleId 朋友圈id
+     * @return 某条朋友圈的点赞好友列表
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 13:12:10
+     */
+    @PostMapping("/likedFriends")
+    public GraceJSONResult likedFriends(String friendCircleId) {
+        return GraceJSONResult.ok(friendCircleService.queryLikedFriends(friendCircleId));
     }
 
 }

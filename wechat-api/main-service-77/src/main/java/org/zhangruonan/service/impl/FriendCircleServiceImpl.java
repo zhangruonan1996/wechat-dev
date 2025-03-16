@@ -239,7 +239,7 @@ public class FriendCircleServiceImpl extends BaseInfoProperties implements Frien
      * @email coderqin@foxmail.com
      * @date 2025-03-16 12:57:07
      */
-    private List<FriendCircleLiked> queryLikedFriends(String friendCircleId) {
+    public List<FriendCircleLiked> queryLikedFriends(String friendCircleId) {
         LambdaQueryWrapper<FriendCircleLiked> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(FriendCircleLiked::getFriendCircleId, friendCircleId);
         return friendCircleLikedMapper.selectList(lambdaQueryWrapper);
