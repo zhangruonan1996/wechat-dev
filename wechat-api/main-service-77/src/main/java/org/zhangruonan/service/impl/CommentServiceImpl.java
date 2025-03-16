@@ -110,4 +110,19 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
         // 删除数据
         commentMapper.delete(lambdaQueryWrapper);
     }
+
+    /**
+     * 根据朋友圈id删除评论信息
+     *
+     * @param friendCircleId 朋友圈id
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 17:32:37
+     */
+    @Override
+    public void deleteByFriendCircleId(String friendCircleId) {
+        LambdaQueryWrapper<Comment> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Comment::getFriendCircleId, friendCircleId);
+        commentMapper.delete(lambdaQueryWrapper);
+    }
 }

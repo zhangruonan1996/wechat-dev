@@ -16,8 +16,11 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Title: Redis 工具类
- * @author 风间影月
+ * Redis工具类
+ *
+ * @author qinhao
+ * @email coderqin@foxmail.com
+ * @date 2025-03-16 17:43:57
  */
 @Component
 public class RedisOperator {

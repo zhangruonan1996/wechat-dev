@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zhangruonan.base.BaseInfoProperties;
@@ -15,6 +16,7 @@ import org.zhangruonan.exceptions.GraceException;
 import org.zhangruonan.grace.result.ResponseStatusEnum;
 import org.zhangruonan.mapper.FriendCircleLikedMapper;
 import org.zhangruonan.mapper.FriendCircleMapper;
+import org.zhangruonan.pojo.Comment;
 import org.zhangruonan.pojo.FriendCircle;
 import org.zhangruonan.pojo.FriendCircleLiked;
 import org.zhangruonan.pojo.User;
@@ -236,6 +238,48 @@ public class FriendCircleServiceImpl extends BaseInfoProperties implements Frien
     public Boolean doILike(String friendCircleId, String userId) {
         String isExist = redis.get(REDIS_DOES_USER_LIKE_FRIEND_CIRCLE + ":" + friendCircleId + ":" + userId);
         return StringUtils.isNotBlank(isExist);
+    }
+
+    /**
+     * 删除朋友圈
+     *
+     * @param friendCircleId 朋友圈id
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 17:19:30
+     */
+    @Override
+    @Transactional
+    public void delete(String friendCircleId, HttpServletRequest request) {
+        // 获取当前请求用户id
+        String userId = request.getHeader(HEADER_USER_ID);
+        // 参数校验
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(friendCircleId)) {
+            GraceException.display(ResponseStatusEnum.FAILED);
+        }
+        // 构造删除条件
+        LambdaQueryWrapper<FriendCircle> deleteWrapper = new LambdaQueryWrapper<>();
+        deleteWrapper.eq(FriendCircle::getId, friendCircleId);
+        deleteWrapper.eq(FriendCircle::getUserId, userId);
+
+        // 删除朋友圈数据
+        friendCircleMapper.delete(deleteWrapper);
+
+        // 删除该条朋友圈对应的点赞记录
+        LambdaQueryWrapper<FriendCircleLiked> likeWrapper = new LambdaQueryWrapper<>();
+        likeWrapper.eq(FriendCircleLiked::getFriendCircleId, friendCircleId);
+        friendCircleLikedMapper.delete(likeWrapper);
+
+        // 删除该条朋友圈对应的评论信息
+        LambdaQueryWrapper<Comment> commentWrapper = new LambdaQueryWrapper<>();
+        commentWrapper.eq(Comment::getFriendCircleId, friendCircleId);
+        commentService.deleteByFriendCircleId(friendCircleId);
+
+        // 删除点赞过后朋友圈的点赞数
+        redis.del(REDIS_FRIEND_CIRCLE_LIKED_COUNTS + ":" + friendCircleId);
+
+        // 删除标记哪个用户点赞过朋友圈
+        redis.allDel(REDIS_DOES_USER_LIKE_FRIEND_CIRCLE + ":" + friendCircleId);
     }
 
     /**

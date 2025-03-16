@@ -46,4 +46,14 @@ public interface CommentService {
      * @date 2025-03-16 17:11:56
      */
     void deleteComment(String commentUserId, String commentId, String friendCircleId);
+
+    /**
+     * 根据朋友圈id删除评论信息
+     *
+     * @param friendCircleId 朋友圈id
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 17:32:12
+     */
+    void deleteByFriendCircleId(String friendCircleId);
 }

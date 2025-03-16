@@ -83,4 +83,13 @@ public interface FriendCircleService {
      */
     Boolean doILike(String friendCircleId, String userId);
 
+    /**
+     * 删除朋友圈
+     *
+     * @param friendCircleId 朋友圈id
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 17:19:15
+     */
+    void delete(String friendCircleId, HttpServletRequest request);
 }

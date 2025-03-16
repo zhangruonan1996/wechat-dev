@@ -5,10 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 import org.zhangruonan.bo.FriendCircleBO;
 import org.zhangruonan.grace.result.GraceJSONResult;
-import org.zhangruonan.pojo.FriendCircleLiked;
 import org.zhangruonan.service.FriendCircleService;
-
-import java.util.List;
 
 /**
  * @author qinhao
@@ -98,6 +95,21 @@ public class FriendCircleController {
     @PostMapping("/likedFriends")
     public GraceJSONResult likedFriends(String friendCircleId) {
         return GraceJSONResult.ok(friendCircleService.queryLikedFriends(friendCircleId));
+    }
+
+    /**
+     * 删除朋友圈
+     *
+     * @param friendCircleId 朋友圈id
+     * @return 删除结果反馈
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 17:18:24
+     */
+    @PostMapping("/delete")
+    public GraceJSONResult delete(String friendCircleId, HttpServletRequest request) {
+        friendCircleService.delete(friendCircleId, request);
+        return GraceJSONResult.ok();
     }
 
 }
