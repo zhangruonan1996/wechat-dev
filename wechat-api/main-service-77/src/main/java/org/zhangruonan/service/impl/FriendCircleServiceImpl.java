@@ -26,6 +26,7 @@ import org.zhangruonan.vo.UserVO;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -98,7 +99,17 @@ public class FriendCircleServiceImpl extends BaseInfoProperties implements Frien
         map.put("userId", userId);
         // 查询数据库数据
         friendCircleMapper.queryFriendCircleList(pageInfo, map);
-        return setterPagedGridPlus(pageInfo);
+
+        PagedGridResult pagedGridResult = setterPagedGridPlus(pageInfo);
+
+        List<FriendCircleVO> list = (List<FriendCircleVO>) pagedGridResult.getRows();
+        for (FriendCircleVO vo : list) {
+            String friendCircleId = vo.getFriendCircleId();
+            List<FriendCircleLiked> likedFriends = queryLikedFriends(friendCircleId);
+            vo.setLikedFriends(likedFriends);
+        }
+
+        return pagedGridResult;
     }
 
     /**
@@ -196,5 +207,20 @@ public class FriendCircleServiceImpl extends BaseInfoProperties implements Frien
         // 删除标记哪个用户点赞过朋友圈
         redis.del(REDIS_DOES_USER_LIKE_FRIEND_CIRCLE + ":" + friendCircleId + ":" + userId);
 
+    }
+
+    /**
+     * 根据朋友圈id查询点赞的朋友列表
+     *
+     * @param friendCircleId 朋友圈id
+     * @return 点赞过的朋友列表
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 12:57:07
+     */
+    private List<FriendCircleLiked> queryLikedFriends(String friendCircleId) {
+        LambdaQueryWrapper<FriendCircleLiked> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(FriendCircleLiked::getFriendCircleId, friendCircleId);
+        return friendCircleLikedMapper.selectList(lambdaQueryWrapper);
     }
 }
