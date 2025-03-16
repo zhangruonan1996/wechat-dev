@@ -1,5 +1,6 @@
 package org.zhangruonan.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,9 @@ import org.zhangruonan.service.UserService;
 import org.zhangruonan.vo.CommentVO;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author qinhao
@@ -61,5 +65,21 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
         commentVO.setCommentUserFace(user.getFace());
         commentVO.setCommentId(peddingComment.getId());
         return commentVO;
+    }
+
+    /**
+     * 查询某条朋友圈的全部评论
+     *
+     * @param friendCircleId 朋友圈id
+     * @return
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 13:37:47
+     */
+    @Override
+    public List<CommentVO> queryAllComment(String friendCircleId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("friendCircleId", friendCircleId);
+        return commentMapper.getFriendCircleComments(map);
     }
 }

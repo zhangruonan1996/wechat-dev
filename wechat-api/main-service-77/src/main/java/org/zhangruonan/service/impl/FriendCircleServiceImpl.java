@@ -18,9 +18,11 @@ import org.zhangruonan.mapper.FriendCircleMapper;
 import org.zhangruonan.pojo.FriendCircle;
 import org.zhangruonan.pojo.FriendCircleLiked;
 import org.zhangruonan.pojo.User;
+import org.zhangruonan.service.CommentService;
 import org.zhangruonan.service.FriendCircleService;
 import org.zhangruonan.service.UserService;
 import org.zhangruonan.utils.PagedGridResult;
+import org.zhangruonan.vo.CommentVO;
 import org.zhangruonan.vo.FriendCircleVO;
 import org.zhangruonan.vo.UserVO;
 
@@ -46,6 +48,9 @@ public class FriendCircleServiceImpl extends BaseInfoProperties implements Frien
 
     @Resource
     private FriendCircleLikedMapper friendCircleLikedMapper;
+
+    @Resource
+    private CommentService commentService;
 
     /**
      * 发表朋友圈
@@ -112,6 +117,9 @@ public class FriendCircleServiceImpl extends BaseInfoProperties implements Frien
             // 判断用户是否点赞过朋友圈
             Boolean res = doILike(friendCircleId, userId);
             vo.setDoILike(res);
+
+            List<CommentVO> commentList = commentService.queryAllComment(friendCircleId);
+            vo.setCommentList(commentList);
         }
 
         return pagedGridResult;

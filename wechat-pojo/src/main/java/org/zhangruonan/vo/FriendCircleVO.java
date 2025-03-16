@@ -1,11 +1,9 @@
 package org.zhangruonan.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.*;
-import lombok.experimental.Accessors;
-import org.zhangruonan.pojo.Comment;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.zhangruonan.pojo.FriendCircleLiked;
 
 import java.io.Serializable;
@@ -42,6 +40,9 @@ public class FriendCircleVO implements Serializable {
      */
     private List<FriendCircleLiked> likedFriends = new ArrayList<>();
 
-    private List<Comment> commentList = new ArrayList<>();
+    /**
+     * 朋友圈的评论列表
+     */
+    private List<CommentVO> commentList = new ArrayList<>();
 
 }

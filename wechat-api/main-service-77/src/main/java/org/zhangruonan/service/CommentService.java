@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.zhangruonan.bo.CommentBO;
 import org.zhangruonan.vo.CommentVO;
 
+import java.util.List;
+
 /**
  * @author qinhao
  * @email coderqin@foxmail.com
@@ -21,5 +23,16 @@ public interface CommentService {
      * @date 2025-03-16 13:24:01
      */
     CommentVO createComment(CommentBO commentBO);
+
+    /**
+     * 查询某条朋友圈的全部评论
+     *
+     * @param friendCircleId 朋友圈id
+     * @return 某条朋友圈的全部评论
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 13:37:12
+     */
+    List<CommentVO> queryAllComment(String friendCircleId);
 
 }

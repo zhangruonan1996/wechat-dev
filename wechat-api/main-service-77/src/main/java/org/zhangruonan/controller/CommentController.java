@@ -22,9 +22,33 @@ public class CommentController {
     @Resource
     private CommentService commentService;
 
+    /**
+     * 创建评论消息
+     *
+     * @param commentBO 评论消息
+     * @param request 本次请求对象
+     * @return 评论消息
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 13:52:02
+     */
     @PostMapping("/create")
     public GraceJSONResult createComment(@RequestBody CommentBO commentBO, HttpServletRequest request) {
         return GraceJSONResult.ok(commentService.createComment(commentBO));
+    }
+
+    /**
+     * 查询某条朋友圈的所有评论消息
+     *
+     * @param friendCircleId 朋友圈id
+     * @return 某条朋友圈的所有评论消息
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 13:51:38
+     */
+    @PostMapping("/query")
+    public GraceJSONResult queryComment(String friendCircleId) {
+        return GraceJSONResult.ok(commentService.queryAllComment(friendCircleId));
     }
 
 }
