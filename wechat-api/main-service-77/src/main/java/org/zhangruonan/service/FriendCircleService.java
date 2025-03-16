@@ -56,4 +56,17 @@ public interface FriendCircleService {
      * @date 2025-03-16 12:19:53
      */
     void unlike(String friendCircleId, HttpServletRequest request);
+
+    /**
+     * 判断用户是否点赞过朋友圈
+     *
+     * @param friendCircleId 朋友圈id
+     * @param userId 用户id
+     * @return 是否点赞过朋友圈
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 13:05:38
+     */
+    Boolean doILike(String friendCircleId, String userId);
+
 }

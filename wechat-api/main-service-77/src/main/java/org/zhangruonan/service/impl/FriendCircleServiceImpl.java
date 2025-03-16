@@ -104,9 +104,14 @@ public class FriendCircleServiceImpl extends BaseInfoProperties implements Frien
 
         List<FriendCircleVO> list = (List<FriendCircleVO>) pagedGridResult.getRows();
         for (FriendCircleVO vo : list) {
+            // 取出朋友圈id
             String friendCircleId = vo.getFriendCircleId();
+            // 根据朋友圈id查询点赞过的朋友列表
             List<FriendCircleLiked> likedFriends = queryLikedFriends(friendCircleId);
             vo.setLikedFriends(likedFriends);
+            // 判断用户是否点赞过朋友圈
+            Boolean res = doILike(friendCircleId, userId);
+            vo.setDoILike(res);
         }
 
         return pagedGridResult;
@@ -207,6 +212,22 @@ public class FriendCircleServiceImpl extends BaseInfoProperties implements Frien
         // 删除标记哪个用户点赞过朋友圈
         redis.del(REDIS_DOES_USER_LIKE_FRIEND_CIRCLE + ":" + friendCircleId + ":" + userId);
 
+    }
+
+    /**
+     * 判断用户是否点赞过朋友圈
+     *
+     * @param friendCircleId 朋友圈id
+     * @param userId 用户id
+     * @return 用户是否点赞过朋友圈
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 13:06:07
+     */
+    @Override
+    public Boolean doILike(String friendCircleId, String userId) {
+        String isExist = redis.get(REDIS_DOES_USER_LIKE_FRIEND_CIRCLE + ":" + friendCircleId + ":" + userId);
+        return StringUtils.isNotBlank(isExist);
     }
 
     /**

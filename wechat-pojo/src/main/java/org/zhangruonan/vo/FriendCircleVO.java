@@ -33,6 +33,13 @@ public class FriendCircleVO implements Serializable {
     private String images;
     private LocalDateTime publishTime;
 
+    /**
+     * 用于判断当前用户是否点赞过朋友圈
+     */
+    private Boolean doILike = false;
+    /**
+     * 点赞的朋友列表
+     */
     private List<FriendCircleLiked> likedFriends = new ArrayList<>();
 
     private List<Comment> commentList = new ArrayList<>();
