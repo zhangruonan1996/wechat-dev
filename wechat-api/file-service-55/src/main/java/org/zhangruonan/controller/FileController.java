@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 /**
  * @author qinhao
  * @email coderqin@foxmail.com
@@ -86,6 +88,19 @@ public class FileController {
     public GraceJSONResult uploadChatBg(@RequestParam("file") MultipartFile file, String userId) throws Exception {
         UserVO userVO = fileService.uploadChatBg(file, userId);
         return GraceJSONResult.ok(userVO);
+    }
+
+    /**
+     * 上传朋友圈图片
+     *
+     * @return 图片链接
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 11:27:42
+     */
+    @PostMapping("/uploadFriendCircleImage")
+    public GraceJSONResult uploadFriendCircleImage(@RequestParam("file") MultipartFile file, String userId) throws Exception {
+        return GraceJSONResult.ok(fileService.uploadFriendCircleImage(file, userId));
     }
 
 }

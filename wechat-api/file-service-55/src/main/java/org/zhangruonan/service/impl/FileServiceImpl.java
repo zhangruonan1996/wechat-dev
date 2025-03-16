@@ -205,6 +205,33 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
+     * 上传朋友圈图片
+     *
+     * @param file 图片
+     * @param userId 上传用户id
+     * @return 图片链接
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-16 11:29:53
+     */
+    @Override
+    public String uploadFriendCircleImage(MultipartFile file, String userId) throws Exception {
+        if (StringUtils.isBlank(userId)) {
+            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+        // 获取文件原始名称
+        String filename = file.getOriginalFilename();
+        if (StringUtils.isBlank(filename)) {
+            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        filename = "friendCircleImage" + "/" + userId + "/" + dealWithoutFilename(filename);
+        String imageUrl = MinioUtils.uploadFile(minioConfig.getBucketName(), filename, file.getInputStream(), true);
+
+        return imageUrl;
+    }
+
+    /**
      * 生成新的文件名（带原文件名）
      *
      * @param filename 文件名
