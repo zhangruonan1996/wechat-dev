@@ -1,4 +1,4 @@
-package org.zhangruonan.netty;
+package org.zhangruonan.netty.http;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
