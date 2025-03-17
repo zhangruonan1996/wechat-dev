@@ -23,10 +23,10 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
         // 通过管道，添加handler处理器
         // HttpServerCodec 是由Netty自己提供的助手类，此处可以理解为管道中的拦截器
         // 当请求到服务端，我们需要进行解码，响应到客户端做编码
-        pipeline.addLast(new HttpServerCodec());
+        pipeline.addLast("HttpServerCodec", new HttpServerCodec());
 
         // 添加自定义的助手类，当请求访问，返回“hello zrn”
-        pipeline.addLast();
+        pipeline.addLast("HttpHandler", new HttpHandler());
 
     }
 }
