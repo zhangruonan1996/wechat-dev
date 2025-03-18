@@ -7,6 +7,12 @@ import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import org.zhangruonan.enums.MsgTypeEnum;
+import org.zhangruonan.netty.ChatMsg;
+import org.zhangruonan.netty.DataContent;
+import org.zhangruonan.utils.JsonUtils;
+
+import java.time.LocalDateTime;
 
 /**
  * 创建自定义助手类
@@ -31,15 +37,37 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
         String content = textWebSocketFrame.text();
         System.out.println("接收到的数据：" + content);
 
+        // 获取客户端发送过来的消息并解析
+        DataContent dataContent = JsonUtils.jsonToPojo(content, DataContent.class);
+        ChatMsg chatMsg = dataContent.getChatMsg();
+
+        String msgText = chatMsg.getMsg();
+        String receiverId = chatMsg.getReceiverId();
+        String senderId = chatMsg.getSenderId();
+
+        // 时间校准，以服务器的时间为准
+        chatMsg.setChatTime(LocalDateTime.now());
+
+        Integer msgType = chatMsg.getMsgType();
+
         // 获取channel
         Channel currentChannel = channelHandlerContext.channel();
         String currentChannelId = currentChannel.id().asLongText();
         String currentChannelShortId = currentChannel.id().asShortText();
 
-        System.out.println("客户端currentChannelId：" + currentChannelId);
-        System.out.println("客户端currentChannelShortId：" + currentChannelShortId);
+        // System.out.println("客户端currentChannelId：" + currentChannelId);
+        // System.out.println("客户端currentChannelShortId：" + currentChannelShortId);
 
-        currentChannel.writeAndFlush(new TextWebSocketFrame(currentChannelId));
+        // 判断消息类型，根据不同的类型来处理不同的业务
+        if (msgType == MsgTypeEnum.CONNECT_INIT.type) {
+            // 当websocket初次open的时候，初始化channel，把channel和用户userid关联起来
+            UserChannelSession.putMultiSession(senderId, currentChannel);
+            UserChannelSession.putUserChannelIdRelation(currentChannelId, senderId);
+        }
+
+        UserChannelSession.outputMulti();
+
+        // currentChannel.writeAndFlush(new TextWebSocketFrame(currentChannelId));
 
     }
 
