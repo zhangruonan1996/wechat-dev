@@ -30,7 +30,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
     /**
      * 用于记录和管理所有客户端的channel组
      */
-    private static ChannelGroup clients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    public static ChannelGroup clients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame textWebSocketFrame) throws Exception {
