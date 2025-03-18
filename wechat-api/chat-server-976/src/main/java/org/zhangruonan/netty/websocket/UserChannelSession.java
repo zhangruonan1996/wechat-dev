@@ -68,6 +68,22 @@ public class UserChannelSession {
         return multiSession.get(userId);
     }
 
+    public static void removeMultiChannels(String userId, String channelId) {
+        List<Channel> channels = getMultiChannels(userId);
+        if (channels == null || channels.isEmpty()) {
+            return;
+        }
+
+        for (int i = 0; i < channels.size(); i++) {
+            Channel tempChannel = channels.get(i);
+            if (tempChannel.id().asLongText().equals(channelId)) {
+                channels.remove(i);
+            }
+        }
+
+        multiSession.put(userId, channels);
+    }
+
     /**
      * 添加用户关联的channel
      *
