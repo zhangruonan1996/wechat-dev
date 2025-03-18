@@ -85,6 +85,31 @@ public class UserChannelSession {
     }
 
     /**
+     * 查询发送者的其它在线channel
+     *
+     * @param userId 发送者id
+     * @param channelId 当前channelId
+     * @return 其它在线channel
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-18 21:39:41
+     */
+    public static List<Channel> getMyOtherChannels(String userId, String channelId) {
+        List<Channel> channels = getMultiChannels(userId);
+        if (channels == null || channels.isEmpty()) {
+            return null;
+        }
+
+        List<Channel> myOtherChannels = new ArrayList<>();
+        for (Channel channel : channels) {
+            if (!channel.id().asLongText().equals(channelId)) {
+                myOtherChannels.add(channel);
+            }
+        }
+        return myOtherChannels;
+    }
+
+    /**
      * 添加用户关联的channel
      *
      * @param userId 用户id
