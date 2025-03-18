@@ -73,11 +73,20 @@ public class SecurityTokenFilter extends BaseInfoProperties implements GlobalFil
 
         // 判断header中是否有token，对用户请求进行拦截判断
         if (StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(userToken)) {
-            String redisToken = redis.get(REDIS_USER_TOKEN + ":" + userId);
-            // 匹配则放行
-            if (redisToken.equals(userToken)) {
+            // 限制只能单设备登录
+            // String redisToken = redis.get(REDIS_USER_TOKEN + ":" + userId);
+            // // 匹配则放行
+            // if (redisToken.equals(userToken)) {
+            //     return chain.filter(exchange);
+            // }
+
+            // 允许多设备登录
+            String userIdRedis = redis.get(REDIS_USER_TOKEN + ":" + userToken);
+            if (userIdRedis.equals(userId)) {
+                // 匹配则放行
                 return chain.filter(exchange);
             }
+
         }
 
         return RenderErrorUtils.display(exchange, ResponseStatusEnum.UN_LOGIN);
