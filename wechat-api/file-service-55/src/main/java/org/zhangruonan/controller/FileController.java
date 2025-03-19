@@ -118,4 +118,19 @@ public class FileController {
         return GraceJSONResult.ok(fileService.uploadChatPhoto(file, userId));
     }
 
+    /**
+     * 上传聊天视频
+     *
+     * @param file 视频文件
+     * @param userId 用户id
+     * @return 视频信息
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-19 21:15:08
+     */
+    @PostMapping("/uploadChatVideo")
+    public GraceJSONResult uploadChatVideo(@RequestParam("file") MultipartFile file, String userId) throws Exception {
+        return GraceJSONResult.ok(fileService.uploadChatVideo(file, userId));
+    }
+
 }

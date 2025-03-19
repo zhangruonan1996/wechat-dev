@@ -3,6 +3,7 @@ package org.zhangruonan.service;
 import org.zhangruonan.vo.UserVO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
+import org.zhangruonan.vo.VideoMsgVO;
 
 import java.io.IOException;
 
@@ -95,4 +96,16 @@ public interface FileService {
      * @date 2025-03-19 20:47:56
      */
     String uploadChatPhoto(MultipartFile file, String userId) throws Exception;
+
+    /**
+     * 上传聊天视频
+     *
+     * @param file 视频文件
+     * @param userId 用户id
+     * @return 视频信息
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-19 21:15:30
+     */
+    VideoMsgVO uploadChatVideo(MultipartFile file, String userId) throws Exception;
 }

@@ -5,18 +5,17 @@ import org.zhangruonan.feign.UserInfoMicroServiceFeign;
 import org.zhangruonan.grace.result.GraceJSONResult;
 import org.zhangruonan.grace.result.ResponseStatusEnum;
 import org.zhangruonan.service.FileService;
-import org.zhangruonan.utils.JsonUtils;
-import org.zhangruonan.utils.MinioConfig;
-import org.zhangruonan.utils.MinioUtils;
-import org.zhangruonan.utils.QrCodeUtils;
+import org.zhangruonan.utils.*;
 import org.zhangruonan.vo.UserVO;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.zhangruonan.vo.VideoMsgVO;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -139,7 +138,7 @@ public class FileServiceImpl implements FileService {
     /**
      * 上传朋友圈背景图
      *
-     * @param file 朋友圈背景图文件
+     * @param file   朋友圈背景图文件
      * @param userId 用户id
      * @return
      * @author qinhao
@@ -173,7 +172,7 @@ public class FileServiceImpl implements FileService {
     /**
      * 上传聊天背景图
      *
-     * @param file 聊天背景图文件
+     * @param file   聊天背景图文件
      * @param userId 用户id
      * @return 最新用户信息
      * @author qinhao
@@ -207,7 +206,7 @@ public class FileServiceImpl implements FileService {
     /**
      * 上传朋友圈图片
      *
-     * @param file 图片
+     * @param file   图片
      * @param userId 上传用户id
      * @return 图片链接
      * @author qinhao
@@ -234,7 +233,7 @@ public class FileServiceImpl implements FileService {
     /**
      * 上传聊天图片
      *
-     * @param file 图片文件
+     * @param file   图片文件
      * @param userId 用户id
      * @return
      * @author qinhao
@@ -256,6 +255,51 @@ public class FileServiceImpl implements FileService {
         String imageUrl = MinioUtils.uploadFile(minioConfig.getBucketName(), filename, file.getInputStream(), true);
 
         return imageUrl;
+    }
+
+    /**
+     * 上传聊天视频
+     *
+     * @param file   视频文件
+     * @param userId 用户id
+     * @return 视频信息
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-19 21:15:55
+     */
+    @Override
+    public VideoMsgVO uploadChatVideo(MultipartFile file, String userId) throws Exception {
+        if (StringUtils.isBlank(userId)) {
+            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+        // 获取文件原始名称
+        String filename = file.getOriginalFilename();
+        if (StringUtils.isBlank(filename)) {
+            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        filename = "chat" + "/" + userId + "/" + "video" + "/" + dealWithoutFilename(filename);
+        String videoUrl = MinioUtils.uploadFile(minioConfig.getBucketName(), filename, file.getInputStream(), true);
+
+        // 帧 封面获取  = 视频截帧   截取第一帧
+        String coverName = UUID.randomUUID().toString() + ".jpg";   // 视频封面的名称
+        String coverPath = JcodecVideoUtil.videoFramesPath + File.separator + "videos" + File.separator + coverName;
+
+        File coverFile = new File(coverPath);
+        if (coverFile.getParentFile().exists()) {
+            coverFile.getParentFile().mkdirs();
+        }
+
+        JcodecVideoUtil.fetchFrame(file, coverFile);
+
+        // 上传封面到minio
+        String coverUrl = MinioUtils.uploadFile(minioConfig.getBucketName(), coverName, new FileInputStream(coverFile), true);
+
+        VideoMsgVO videoMsgVO = new VideoMsgVO();
+        videoMsgVO.setVideoPath(videoUrl);
+        videoMsgVO.setCover(coverUrl);
+
+        return videoMsgVO;
     }
 
     /**
