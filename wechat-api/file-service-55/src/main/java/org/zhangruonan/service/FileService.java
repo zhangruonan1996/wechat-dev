@@ -108,4 +108,16 @@ public interface FileService {
      * @date 2025-03-19 21:15:30
      */
     VideoMsgVO uploadChatVideo(MultipartFile file, String userId) throws Exception;
+
+    /**
+     * 上传聊天语音消息
+     *
+     * @param file 语音文件
+     * @param userId 用户id
+     * @return 文件链接
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-19 22:58:13
+     */
+    String uploadChatVioce(MultipartFile file, String userId) throws Exception;
 }

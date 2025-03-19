@@ -242,18 +242,7 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public String uploadChatPhoto(MultipartFile file, String userId) throws Exception {
-        if (StringUtils.isBlank(userId)) {
-            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
-        }
-        // 获取文件原始名称
-        String filename = file.getOriginalFilename();
-        if (StringUtils.isBlank(filename)) {
-            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
-        }
-
-        filename = "chat" + "/" + userId + "/" + "photo" + "/" + dealWithoutFilename(filename);
-        String imageUrl = MinioUtils.uploadFile(minioConfig.getBucketName(), filename, file.getInputStream(), true);
-
+        String imageUrl = uploadForChatFiles(file, userId, "photo");
         return imageUrl;
     }
 
@@ -269,17 +258,7 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public VideoMsgVO uploadChatVideo(MultipartFile file, String userId) throws Exception {
-        if (StringUtils.isBlank(userId)) {
-            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
-        }
-        // 获取文件原始名称
-        String filename = file.getOriginalFilename();
-        if (StringUtils.isBlank(filename)) {
-            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
-        }
-
-        filename = "chat" + "/" + userId + "/" + "video" + "/" + dealWithoutFilename(filename);
-        String videoUrl = MinioUtils.uploadFile(minioConfig.getBucketName(), filename, file.getInputStream(), true);
+        String videoUrl = uploadForChatFiles(file, userId, "video");
 
         // 帧 封面获取  = 视频截帧   截取第一帧
         String coverName = UUID.randomUUID().toString() + ".jpg";   // 视频封面的名称
@@ -300,6 +279,22 @@ public class FileServiceImpl implements FileService {
         videoMsgVO.setCover(coverUrl);
 
         return videoMsgVO;
+    }
+
+    /**
+     * 上传聊天语音消息
+     *
+     * @param file 语音文件
+     * @param userId 用户id
+     * @return 文件链接
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-19 22:58:50
+     */
+    @Override
+    public String uploadChatVioce(MultipartFile file, String userId) throws Exception {
+        String voiceUrl = uploadForChatFiles(file, userId, "voice");
+        return voiceUrl;
     }
 
     /**
@@ -331,6 +326,35 @@ public class FileServiceImpl implements FileService {
         String suffixName = filename.substring(filename.lastIndexOf("."));
         String uuid = UUID.randomUUID().toString();
         return uuid + suffixName;
+    }
+
+    /**
+     * 上传聊天相关文件
+     *
+     * @param file 文件
+     * @param userId 用户id
+     * @param fileType 文件类型
+     * @return 文件url
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-19 23:01:40
+     */
+    private String uploadForChatFiles(MultipartFile file, String userId, String fileType) throws Exception {
+
+        if (StringUtils.isBlank(userId)) {
+            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        // 获取文件原始名称
+        String filename = file.getOriginalFilename();
+        if (StringUtils.isBlank(filename)) {
+            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        filename = "chat" + "/" + userId + "/" + fileType + "/" + dealWithoutFilename(filename);
+        String fileUrl = MinioUtils.uploadFile(minioConfig.getBucketName(), filename, file.getInputStream(), true);
+
+        return fileUrl;
     }
 
 }
