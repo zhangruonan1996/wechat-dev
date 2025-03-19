@@ -232,6 +232,33 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
+     * 上传聊天图片
+     *
+     * @param file 图片文件
+     * @param userId 用户id
+     * @return
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-19 20:48:17
+     */
+    @Override
+    public String uploadChatPhoto(MultipartFile file, String userId) throws Exception {
+        if (StringUtils.isBlank(userId)) {
+            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+        // 获取文件原始名称
+        String filename = file.getOriginalFilename();
+        if (StringUtils.isBlank(filename)) {
+            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        filename = "chat" + "/" + userId + "/" + "photo" + "/" + dealWithoutFilename(filename);
+        String imageUrl = MinioUtils.uploadFile(minioConfig.getBucketName(), filename, file.getInputStream(), true);
+
+        return imageUrl;
+    }
+
+    /**
      * 生成新的文件名（带原文件名）
      *
      * @param filename 文件名

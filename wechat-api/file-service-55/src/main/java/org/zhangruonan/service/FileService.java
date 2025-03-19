@@ -83,4 +83,16 @@ public interface FileService {
      * @date 2025-03-16 11:29:29
      */
     String uploadFriendCircleImage(MultipartFile file, String userId) throws Exception;
+
+    /**
+     * 上传聊天图片
+     *
+     * @param file 图片文件
+     * @param userId 用户id
+     * @return 图片链接
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-19 20:47:56
+     */
+    String uploadChatPhoto(MultipartFile file, String userId) throws Exception;
 }

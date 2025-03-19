@@ -103,4 +103,19 @@ public class FileController {
         return GraceJSONResult.ok(fileService.uploadFriendCircleImage(file, userId));
     }
 
+    /**
+     * 上传聊天图片
+     *
+     * @param file 图片文件
+     * @param userId 用户id
+     * @return 上传图片链接
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-19 20:47:25
+     */
+    @PostMapping("/uploadChatPhoto")
+    public GraceJSONResult uploadChatPhoto(@RequestParam("file") MultipartFile file, String userId) throws Exception {
+        return GraceJSONResult.ok(fileService.uploadChatPhoto(file, userId));
+    }
+
 }
