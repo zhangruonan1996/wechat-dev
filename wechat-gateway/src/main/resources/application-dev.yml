@@ -26,7 +26,7 @@ spring:
         - id: fileRoute
           uri: lb://file-service
           predicates:
-            - Path=/file/**,/static/**
+            - Path=/file/**,/static/**,/speech/**
         - id: mainRoute
           uri: lb://main-service
           predicates:
