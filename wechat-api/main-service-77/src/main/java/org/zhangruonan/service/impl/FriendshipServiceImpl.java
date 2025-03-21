@@ -162,4 +162,33 @@ public class FriendshipServiceImpl extends BaseInfoProperties implements Friends
         friendshipMapper.delete(queryWrapper);
     }
 
+    /**
+     * 判断两个朋友之间的关系是否拉黑
+     *
+     * @param friendId1st 用户1id
+     * @param friendId2nd 用户2id
+     * @return 是否拉黑
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-21 19:30:34
+     */
+    @Override
+    public Boolean isBlackEachOther(String friendId1st, String friendId2nd) {
+        // 需要进行两次查询，A拉黑B，B拉黑A，AB互相拉黑
+        // 只需要符合其中一个条件，则双方消息不可送达
+        LambdaQueryWrapper<Friendship> lambdaQueryWrapper1 = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper1.eq(Friendship::getMyId, friendId1st);
+        lambdaQueryWrapper1.eq(Friendship::getFriendId, friendId2nd);
+        lambdaQueryWrapper1.eq(Friendship::getIsBlack, YesOrNo.YES.type);
+        Friendship friendship1st = friendshipMapper.selectOne(lambdaQueryWrapper1);
+
+        LambdaQueryWrapper<Friendship> lambdaQueryWrapper2 = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper2.eq(Friendship::getMyId, friendId2nd);
+        lambdaQueryWrapper2.eq(Friendship::getFriendId, friendId1st);
+        lambdaQueryWrapper2.eq(Friendship::getIsBlack, YesOrNo.YES.type);
+        Friendship friendship2nd = friendshipMapper.selectOne(lambdaQueryWrapper2);
+
+        return friendship1st != null || friendship2nd != null;
+    }
+
 }

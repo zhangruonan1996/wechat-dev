@@ -70,4 +70,16 @@ public interface FriendshipService {
      * @date 2025-03-15 23:21:13
      */
     void delete(String friendId, HttpServletRequest request);
+
+    /**
+     * 判断两个朋友之间的关系是否拉黑
+     *
+     * @param friendId1st 用户1id
+     * @param friendId2nd 用户2id
+     * @return 是否拉黑
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-21 19:30:10
+     */
+    Boolean isBlackEachOther(String friendId1st, String friendId2nd);
 }

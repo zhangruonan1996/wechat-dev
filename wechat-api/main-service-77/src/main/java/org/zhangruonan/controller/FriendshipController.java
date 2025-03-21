@@ -2,6 +2,7 @@ package org.zhangruonan.controller;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -127,6 +128,22 @@ public class FriendshipController {
     public GraceJSONResult delete(String friendId, HttpServletRequest request) {
         friendshipService.delete(friendId, request);
         return GraceJSONResult.ok();
+    }
+
+    /**
+     * 判断两个朋友之间的关系是否拉黑
+     *
+     * @param friendId1st 用户1id
+     * @param friendId2nd 用户2id
+     * @return 是否拉黑
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-03-21 19:28:57
+     */
+    @GetMapping("/isBlack")
+    public GraceJSONResult isBlack(String friendId1st, String friendId2nd) {
+        Boolean result = friendshipService.isBlackEachOther(friendId1st, friendId2nd);
+        return GraceJSONResult.ok(result);
     }
 
 }

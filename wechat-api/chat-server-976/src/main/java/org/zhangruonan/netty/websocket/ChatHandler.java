@@ -8,10 +8,13 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import org.zhangruonan.enums.MsgTypeEnum;
+import org.zhangruonan.grace.result.GraceJSONResult;
+import org.zhangruonan.grace.result.JSONResult;
 import org.zhangruonan.netty.ChatMsg;
 import org.zhangruonan.netty.DataContent;
 import org.zhangruonan.utils.JsonUtils;
 import org.zhangruonan.utils.LocalDateUtils;
+import org.zhangruonan.utils.OkHttpUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,6 +49,19 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
         String msgText = chatMsg.getMsg();
         String receiverId = chatMsg.getReceiverId();
         String senderId = chatMsg.getSenderId();
+
+        // ========================= 判断是否黑名单 开始 =========================
+
+        // 如果双方只要有一方是黑名单，则终止发送
+        GraceJSONResult jsonResult = OkHttpUtil.get("http://127.0.0.1:20000/friendship/isBlack?friendId1st=" + receiverId + "&friendId2nd=" + senderId);
+
+        Boolean isBlack = (Boolean) jsonResult.getData();
+        System.out.println("当前的黑名单关系为：" + isBlack);
+        if (isBlack) {
+            return;
+        }
+
+        // ========================= 判断是否黑名单 结束 =========================
 
         // 时间校准，以服务器的时间为准
         chatMsg.setChatTime(LocalDateTime.now());
