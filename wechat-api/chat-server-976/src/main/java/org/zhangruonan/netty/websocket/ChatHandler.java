@@ -1,5 +1,6 @@
 package org.zhangruonan.netty.websocket;
 
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -9,12 +10,13 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import org.zhangruonan.enums.MsgTypeEnum;
 import org.zhangruonan.grace.result.GraceJSONResult;
-import org.zhangruonan.grace.result.JSONResult;
 import org.zhangruonan.netty.ChatMsg;
 import org.zhangruonan.netty.DataContent;
+import org.zhangruonan.netty.mq.MessagePublisher;
 import org.zhangruonan.utils.JsonUtils;
 import org.zhangruonan.utils.LocalDateUtils;
 import org.zhangruonan.utils.OkHttpUtil;
+import org.zhangruonan.utils.SnowUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -81,10 +83,17 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
             // 当websocket初次open的时候，初始化channel，把channel和用户userid关联起来
             UserChannelSession.putMultiSession(senderId, currentChannel);
             UserChannelSession.putUserChannelIdRelation(currentChannelId, senderId);
+            return;
         } else if (msgType == MsgTypeEnum.WORDS.type
                 || msgType == MsgTypeEnum.IMAGE.type
                 || msgType == MsgTypeEnum.VIDEO.type
                 || msgType == MsgTypeEnum.VOICE.type) {
+
+            // 此处为mq异步解耦，保存信息到数据库，数据库无法获得信息的主键id，所以此处可以用雪花算法生成唯一的主键ID
+            String msgId = IdWorker.getIdStr();
+
+            chatMsg.setMsgId(msgId);
+
             // 发送消息
             List<Channel> receiverChannels = UserChannelSession.getMultiChannels(receiverId);
             if (receiverChannels == null || receiverChannels.isEmpty()) {
@@ -123,6 +132,9 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
                 }
             }
         }
+
+        // 把聊天信息作为mq的消息发送给消费者进行消费处理（保存到数据库）
+        MessagePublisher.sendMsgToSave(chatMsg);
 
         UserChannelSession.outputMulti();
 
