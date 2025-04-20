@@ -5,7 +5,6 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import org.zhangruonan.netty.http.HttpServerInitializer;
 import org.zhangruonan.netty.utils.JedisPoolUtils;
 import org.zhangruonan.netty.websocket.WebsocketServerInitializer;
 import redis.clients.jedis.Jedis;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
  * @email coderqin@foxmail.com
  * @date 2025-03-17 20:51:49
  */
-public class ChatServer {
+public class ChatServer2 {
 
     public static final Integer nettyDefaultPort = 976;
 
