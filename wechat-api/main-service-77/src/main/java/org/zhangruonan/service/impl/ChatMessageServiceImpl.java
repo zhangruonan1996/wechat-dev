@@ -33,5 +33,11 @@ public class ChatMessageServiceImpl extends BaseInfoProperties implements ChatMe
 
         chatMessageMapper.insert(chatMessage);
 
+        String receiverId = chatMsg.getReceiverId();
+        String senderId = chatMsg.getSenderId();
+
+        // 通过redis累加信息接收者的对应记录
+        redis.incrementHash(CHAT_MSG_LIST + ":" + receiverId, senderId, 1);
+
     }
 }

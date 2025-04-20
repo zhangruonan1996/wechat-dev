@@ -83,7 +83,6 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
             // 当websocket初次open的时候，初始化channel，把channel和用户userid关联起来
             UserChannelSession.putMultiSession(senderId, currentChannel);
             UserChannelSession.putUserChannelIdRelation(currentChannelId, senderId);
-            return;
         } else if (msgType == MsgTypeEnum.WORDS.type
                 || msgType == MsgTypeEnum.IMAGE.type
                 || msgType == MsgTypeEnum.VIDEO.type
@@ -117,6 +116,10 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
                     }
                 }
             }
+
+
+            // 把聊天信息作为mq的消息发送给消费者进行消费处理（保存到数据库）
+            MessagePublisher.sendMsgToSave(chatMsg);
         }
 
         List<Channel> myOtherChannels = UserChannelSession.getMyOtherChannels(senderId, currentChannelId);
@@ -132,9 +135,6 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
                 }
             }
         }
-
-        // 把聊天信息作为mq的消息发送给消费者进行消费处理（保存到数据库）
-        MessagePublisher.sendMsgToSave(chatMsg);
 
         UserChannelSession.outputMulti();
 
