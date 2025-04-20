@@ -33,4 +33,14 @@ public interface ChatMessageService {
      * @date 2025-04-20 17:24:21
      */
     PagedGridResult queryChatMsgList(String senderId, String receiverId, Integer page, Integer pageSize);
+
+    /**
+     * 标记语音聊天信息的签收已读
+     *
+     * @param msgId 消息id
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-04-20 17:40:56
+     */
+    void updateMessageSignRead(String msgId);
 }

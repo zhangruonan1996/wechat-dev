@@ -88,4 +88,21 @@ public class ChatMessageServiceImpl extends BaseInfoProperties implements ChatMe
 
         return setterPagedGridPlus(pageInfo);
     }
+
+    /**
+     * 标记语音聊天信息的签收已读
+     *
+     * @param msgId 消息id
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-04-20 17:41:22
+     */
+    @Override
+    @Transactional
+    public void updateMessageSignRead(String msgId) {
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setId(msgId);
+        chatMessage.setIsRead(true);
+        chatMessageMapper.updateById(chatMessage);
+    }
 }

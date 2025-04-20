@@ -75,4 +75,17 @@ public class ChatController extends BaseInfoProperties {
         return GraceJSONResult.ok(result);
     }
 
+    /**
+     * 已读签收标记
+     *
+     * @author qinhao
+     * @email coderqin@foxmail.com
+     * @date 2025-04-20 17:39:32
+     */
+    @PostMapping("/signRead/{msgId}")
+    public GraceJSONResult signRead(@PathVariable String msgId) {
+        chatMessageService.updateMessageSignRead(msgId);
+        return GraceJSONResult.ok();
+    }
+
 }
